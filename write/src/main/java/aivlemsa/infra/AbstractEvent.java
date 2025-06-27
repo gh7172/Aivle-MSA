@@ -1,6 +1,6 @@
 package aivlemsa.infra;
 
-import aivlemsa.PublishApplication;
+import aivlemsa.WriteApplication;
 import aivlemsa.config.kafka.KafkaProcessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,7 +32,7 @@ public class AbstractEvent {
         /**
          * spring streams 방식
          */
-        KafkaProcessor processor = PublishApplication.applicationContext.getBean(
+        KafkaProcessor processor = WriteApplication.applicationContext.getBean(
             KafkaProcessor.class
         );
         MessageChannel outputChannel = processor.outboundTopic();
