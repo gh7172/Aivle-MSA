@@ -1,0 +1,132 @@
+server:
+  port: 8088
+
+---
+
+spring:
+  profiles: default
+  cloud:
+    gateway:
+#<<< API Gateway / Routes
+      routes:
+        - id: author
+          uri: http://localhost:8082
+          predicates:
+            - Path=/작가/**, 
+        - id: publish
+          uri: http://localhost:8083
+          predicates:
+            - Path=/집필/**, 
+        - id: books
+          uri: http://localhost:8084
+          predicates:
+            - Path=/도서/**, 
+        - id: subscription
+          uri: http://localhost:8085
+          predicates:
+            - Path=/subscribes/**, /getSubscribes/**
+        - id: user
+          uri: http://localhost:8086
+          predicates:
+            - Path=/유저/**, 
+        - id: point
+          uri: http://localhost:8087
+          predicates:
+            - Path=/points/**, /getPoints/**
+        - id: generation
+          uri: http://localhost:8088
+          predicates:
+            - Path=/집필요청/**, 
+        - id: purchase
+          uri: http://localhost:8089
+          predicates:
+            - Path=/pays/**, /getPays/**
+        - id: usercenter
+          uri: http://localhost:8090
+          predicates:
+            - Path=, /userInfos/**
+        - id: read
+          uri: http://localhost:8091
+          predicates:
+            - Path=/undefined/**, 
+        - id: frontend
+          uri: http://localhost:8080
+          predicates:
+            - Path=/**
+#>>> API Gateway / Routes
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "*"
+            allowedMethods:
+              - "*"
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+
+
+---
+
+spring:
+  profiles: docker
+  cloud:
+    gateway:
+      routes:
+        - id: author
+          uri: http://author:8080
+          predicates:
+            - Path=/작가/**, 
+        - id: publish
+          uri: http://publish:8080
+          predicates:
+            - Path=/집필/**, 
+        - id: books
+          uri: http://books:8080
+          predicates:
+            - Path=/도서/**, 
+        - id: subscription
+          uri: http://subscription:8080
+          predicates:
+            - Path=/subscribes/**, 
+        - id: user
+          uri: http://user:8080
+          predicates:
+            - Path=/유저/**, 
+        - id: point
+          uri: http://point:8080
+          predicates:
+            - Path=/points/**, 
+        - id: generation
+          uri: http://generation:8080
+          predicates:
+            - Path=/집필요청/**, 
+        - id: purchase
+          uri: http://purchase:8080
+          predicates:
+            - Path=/pays/**, 
+        - id: usercenter
+          uri: http://usercenter:8080
+          predicates:
+            - Path=, 
+        - id: read
+          uri: http://read:8080
+          predicates:
+            - Path=/undefined/**, 
+        - id: frontend
+          uri: http://frontend:8080
+          predicates:
+            - Path=/**
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "*"
+            allowedMethods:
+              - "*"
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+
+server:
+  port: 8080
