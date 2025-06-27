@@ -3,6 +3,8 @@ package aivlemsa.infra;
 import aivlemsa.config.kafka.KafkaProcessor;
 import aivlemsa.domain.*;
 
+
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

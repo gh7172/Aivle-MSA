@@ -32,6 +32,10 @@ public class GenerateCommandHandler implements ApplicationListener<RequestBookPu
         this.publisher = publisher;
     }
 
+    @Autowired
+    @Qualifier(KafkaProcessor.OUTPUT)
+    private MessageChannel outboundTopic;
+
     @Override
     public void onApplicationEvent(RequestBookPublicationCommand cmd) {
         log.info("Handling RequestBookPublicationCommand for bookId={}", cmd.getBookId());
@@ -59,6 +63,14 @@ public class GenerateCommandHandler implements ApplicationListener<RequestBookPu
             successEvt.setSummary(aiSummary);
             successEvt.setImageUrl(coverUrl);
             publisher.publishEvent(successEvt);
+
+            outboundTopic.send(
+                MessageBuilder
+                    .withPayload(successEvt)
+                    .setHeader("contentType", "application/json")
+                    .build()
+            );
+
             log.info("Published GenerationSucceeded for bookId={}", cmd.getBookId());
 
         } catch (Exception e) {
