@@ -1,7 +1,7 @@
 package aivlemsa.infra;
 
 import aivlemsa.domain.*;
-import java.util.Optional;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
@@ -15,17 +15,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 // @RequestMapping(value="/집필요청")
 @Transactional
-public class 집필요청Controller {
+public class GenerateController {
 
     @Autowired
-    집필요청Repository 집필요청Repository;
+    GenerateRepository GenerateRepository;
 
     @RequestMapping(
         value = "/집필요청/requestbookpublication",
         method = RequestMethod.POST,
         produces = "application/json;charset=UTF-8"
     )
-    public 집필요청 requestBookPublication(
+    public Generate requestBookPublication(
         HttpServletRequest request,
         HttpServletResponse response,
         @RequestBody RequestBookPublicationCommand requestBookPublicationCommand
@@ -33,10 +33,10 @@ public class 집필요청Controller {
         System.out.println(
             "##### /집필요청/requestBookPublication  called #####"
         );
-        집필요청 집필요청 = new 집필요청();
-        집필요청.requestBookPublication(requestBookPublicationCommand);
-        집필요청Repository.save(집필요청);
-        return 집필요청;
+        Generate Generate = new Generate();
+        Generate.requestBookPublication(requestBookPublicationCommand);
+        GenerateRepository.save(Generate);
+        return Generate;
     }
 }
 //>>> Clean Arch / Inbound Adaptor
