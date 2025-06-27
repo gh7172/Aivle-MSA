@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 //<<< Clean Arch / Inbound Adaptor
 
 @RestController
-// @RequestMapping(value="/집필요청")
+// @RequestMapping(value="/generate")
 @Transactional
 public class GenerateController {
 
@@ -21,7 +21,7 @@ public class GenerateController {
     GenerateRepository GenerateRepository;
 
     @RequestMapping(
-        value = "/집필요청/requestbookpublication",
+        value = "/generate/requestbookpublication",
         method = RequestMethod.POST,
         produces = "application/json;charset=UTF-8"
     )
@@ -31,7 +31,7 @@ public class GenerateController {
         @RequestBody RequestBookPublicationCommand requestBookPublicationCommand
     ) throws Exception {
         System.out.println(
-            "##### /집필요청/requestBookPublication  called #####"
+            "##### /generate/requestBookPublication  called #####"
         );
         Generate Generate = new Generate();
         Generate.requestBookPublication(requestBookPublicationCommand);
