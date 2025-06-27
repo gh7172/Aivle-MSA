@@ -8,10 +8,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class PayHateoasProcessor
-    implements RepresentationModelProcessor<EntityModel<Pay>> {
+        implements RepresentationModelProcessor<EntityModel<GetPay>> {
 
     @Override
-    public EntityModel<Pay> process(EntityModel<Pay> model) {
+    public EntityModel<GetPay> process(EntityModel<GetPay> model) {
         return model;
     }
 }
