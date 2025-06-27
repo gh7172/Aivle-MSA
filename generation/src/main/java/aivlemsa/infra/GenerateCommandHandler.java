@@ -36,20 +36,44 @@ public class GenerateCommandHandler implements ApplicationListener<RequestBookPu
     public void onApplicationEvent(RequestBookPublicationCommand cmd) {
         log.info("Handling RequestBookPublicationCommand for bookId={}", cmd.getBookId());
 
-        Generate gen = generateRepository.findById(cmd.getBookId())
+        Generate generate = generateRepository.findById(cmd.getBookId())
             .orElseThrow(() -> new IllegalStateException("Generate not found: " + cmd.getBookId()));
 
         try {
+            /*
             String generated = openAIService.generateBook(cmd.getSummary());
             gen.markSucceeded(generated);
             publisher.publishEvent(new GenerationSucceeded(gen));
+            log.info("Published GenerationSucceeded for bookId={}", cmd.getBookId()); */
+
+            // 도서 내용 요약
+            String aiSummary = openAIService.generateSummary(cmd.getSummary());
+            generate.markSummaryGenerated(aiSummary);
+
+            // 도서 표지 생성
+            Stinrg coverUrl = openAIService.generateCover(cmd.getTitle(), cmd.getSummary());
+            generate.setImageUrl(coverUrl);
+
+            generate.markSucceeded();
+            GenerationSucceeded successEvt = new GenerationSucceeded(generate);
+            successEvt.setSummary(aiSummary);
+            successEvt.setImageUrl(coverUrl);
+            publisher.publishEvent(successEvt);
             log.info("Published GenerationSucceeded for bookId={}", cmd.getBookId());
-        } catch (Exception ex) {
+
+        } catch (Exception e) {
+            /*
             gen.markFailed(ex.getMessage());
             publisher.publishEvent(new GenerationFailed(gen));
-            log.error("Published GenerationFailed for bookId={}: {}", cmd.getBookId(), ex.getMessage());
+            log.error("Published GenerationFailed for bookId={}: {}", cmd.getBookId(), ex.getMessage()); */
+            String error = e.getMessage();
+            generate.markFailed(error);
+            GenerationFailed failEvt = new GenerationFailed(generate);
+            failEvt.setState(error);
+            publisher.publishEvent(failEvt);
+            log.error("Published GenerationFailed for bookId={}: {}", cmd.getBookId(), error);
         }
 
-        generateRepository.save(gen);
+        generateRepository.save(generate);
     }
 }
