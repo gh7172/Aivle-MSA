@@ -23,7 +23,7 @@ public class PointController {
     @RequestMapping(value = "/points/chargepoints",
             method = RequestMethod.POST,
             produces = "application/json;charset=UTF-8")
-    public Point chargePoints(HttpServletRequest request, HttpServletResponse response, 
+    public Point chargePoints(HttpServletRequest request, HttpServletResponse response
         ) throws Exception {
             System.out.println("##### /point/chargePoints  called #####");
             Point point = new Point();

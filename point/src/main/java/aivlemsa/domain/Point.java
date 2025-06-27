@@ -22,7 +22,6 @@ import lombok.Data;
 public class Point {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long userId;
 
     private Integer points;
