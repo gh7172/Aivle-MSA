@@ -105,3 +105,6 @@ spring:
           contentType: application/json
 
 
+openai:
+  api:
+    key: '임시처리'
