@@ -1,27 +1,23 @@
 package aivlemsa.domain;
 
-import aivlemsa.domain.*;
 import aivlemsa.infra.AbstractEvent;
-import java.time.LocalDate;
-import java.util.*;
-import lombok.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-//<<< DDD / Domain Event
 @Data
 @ToString
+@NoArgsConstructor
 public class BookPurchaseRequested extends AbstractEvent {
 
     private String id;
     private Long userId;
     private String bookId;
-    private String state;
 
-    public BookPurchaseRequested(Pay aggregate) {
+    public BookPurchaseRequested(Purchase aggregate) {
         super(aggregate);
-    }
-
-    public BookPurchaseRequested() {
-        super();
+        this.id = aggregate.getId();
+        this.userId = aggregate.getUserId();
+        this.bookId = aggregate.getBookId();
     }
 }
-//>>> DDD / Domain Event

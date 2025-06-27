@@ -21,40 +21,31 @@ public class PolicyHandler {
     PayRepository payRepository;
 
     @StreamListener(KafkaProcessor.INPUT)
-    public void whatever(@Payload String eventString) {}
-
-    @StreamListener(
-        value = KafkaProcessor.INPUT,
-        condition = "headers['type']=='PurchasePaymentSucceeded'"
-    )
-    public void wheneverPurchasePaymentSucceeded_UpdateState(
-        @Payload PurchasePaymentSucceeded purchasePaymentSucceeded
-    ) {
-        PurchasePaymentSucceeded event = purchasePaymentSucceeded;
-        System.out.println(
-            "\n\n##### listener UpdateState : " +
-            purchasePaymentSucceeded +
-            "\n\n"
-        );
-
-        // Sample Logic //
-        Pay.updateState(event);
+    public void whatever(@Payload String eventString) {
     }
 
-    @StreamListener(
-        value = KafkaProcessor.INPUT,
-        condition = "headers['type']=='PurchasePaymentFailed'"
-    )
-    public void wheneverPurchasePaymentFailed_UpdateState(
-        @Payload PurchasePaymentFailed purchasePaymentFailed
-    ) {
-        PurchasePaymentFailed event = purchasePaymentFailed;
+    @StreamListener(value = KafkaProcessor.INPUT, condition = "headers['type']=='PurchasePaymentSucceeded'")
+    public void wheneverPurchasePaymentSucceeded_UpdateState(
+            @Payload PurchaseUpdatedCommand purchasePaymentSucceeded) {
+        PurchaseUpdatedCommand event = purchasePaymentSucceeded;
         System.out.println(
-            "\n\n##### listener UpdateState : " + purchasePaymentFailed + "\n\n"
-        );
+                "\n\n##### listener UpdateState : " +
+                        purchasePaymentSucceeded +
+                        "\n\n");
 
         // Sample Logic //
-        Pay.updateState(event);
+        GetPay.updateState(event);
+    }
+
+    @StreamListener(value = KafkaProcessor.INPUT, condition = "headers['type']=='PurchasePaymentFailed'")
+    public void wheneverPurchasePaymentFailed_UpdateState(
+            @Payload BookPurchaseCommand purchasePaymentFailed) {
+        BookPurchaseCommand event = purchasePaymentFailed;
+        System.out.println(
+                "\n\n##### listener UpdateState : " + purchasePaymentFailed + "\n\n");
+
+        // Sample Logic //
+        GetPay.updateState(event);
     }
 }
-//>>> Clean Arch / Inbound Adaptor
+// >>> Clean Arch / Inbound Adaptor
