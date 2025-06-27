@@ -2,10 +2,7 @@ package aivlemsa.infra;
 
 import aivlemsa.config.kafka.KafkaProcessor;
 import aivlemsa.domain.*;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import javax.naming.NameParser;
-import javax.naming.NameParser;
+
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.StreamListener;
@@ -18,7 +15,7 @@ import org.springframework.stereotype.Service;
 public class PolicyHandler {
 
     @Autowired
-    집필요청Repository 집필요청Repository;
+    GenerateRepository generateRepository;
 
     @StreamListener(KafkaProcessor.INPUT)
     public void whatever(@Payload String eventString) {}
@@ -40,10 +37,8 @@ public class PolicyHandler {
         // Sample Logic //
 
         RequestBookPublicationCommand command = new RequestBookPublicationCommand();
-        //command.setBookId("???");
-        //command.setSummary("???");
-        //command.setImageUrl("???");
-        집필요청.requestBookPublication(command);
+        command.setBookId(event.getBookId());
+        Generate.requestBookPublication(command);
     }
 }
 //>>> Clean Arch / Inbound Adaptor

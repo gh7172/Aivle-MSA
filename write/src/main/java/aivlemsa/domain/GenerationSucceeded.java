@@ -1,9 +1,9 @@
 package aivlemsa.domain;
 
 import aivlemsa.infra.AbstractEvent;
-import lombok.*;
+import lombok.Data;
+import lombok.ToString;
 
-//<<< DDD / Domain Event
 @Data
 @ToString
 public class GenerationSucceeded extends AbstractEvent {
@@ -12,13 +12,4 @@ public class GenerationSucceeded extends AbstractEvent {
     private String summary;
     private String imageUrl;
     private String state;
-
-    public GenerationSucceeded(Generate aggregate) {
-        super(aggregate);
-    }
-
-    public GenerationSucceeded() {
-        super();
-    }
 }
-//>>> DDD / Domain Event
