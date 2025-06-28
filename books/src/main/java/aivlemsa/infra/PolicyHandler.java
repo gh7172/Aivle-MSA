@@ -5,7 +5,6 @@ import aivlemsa.domain.*;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javax.naming.NameParser;
-import javax.naming.NameParser;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.StreamListener;
@@ -18,7 +17,7 @@ import org.springframework.stereotype.Service;
 public class PolicyHandler {
 
     @Autowired
-    도서Repository 도서Repository;
+    BookRepository bookRepository;
 
     @StreamListener(KafkaProcessor.INPUT)
     public void whatever(@Payload String eventString) {}
@@ -27,20 +26,18 @@ public class PolicyHandler {
         value = KafkaProcessor.INPUT,
         condition = "headers['type']=='GenerationSucceeded'"
     )
-    public void wheneverGenerationSucceeded_HandlePublicationAssetsGenerationSucceeded(
+    public void wheneverGenerationSucceeded_AddBook(
         @Payload GenerationSucceeded generationSucceeded
     ) {
         GenerationSucceeded event = generationSucceeded;
         System.out.println(
-            "\n\n##### listener HandlePublicationAssetsGenerationSucceeded : " +
+            "\n\n##### listener AddBook : " +
             generationSucceeded +
             "\n\n"
         );
 
         // Sample Logic //
-
-        AddBookCommand command = new AddBookCommand();
-        도서.addBook(command);
+        Book.addBook(event);
     }
 }
 //>>> Clean Arch / Inbound Adaptor

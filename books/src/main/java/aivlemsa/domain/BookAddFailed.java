@@ -20,7 +20,7 @@ public class BookAddFailed extends AbstractEvent {
     private String coverImage;
     private String state;
 
-    public BookAddFailed(도서 aggregate) {
+    public BookAddFailed(Book aggregate) {
         super(aggregate);
     }
 

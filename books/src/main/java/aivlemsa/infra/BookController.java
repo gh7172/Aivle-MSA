@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 //<<< Clean Arch / Inbound Adaptor
 
 @RestController
-// @RequestMapping(value="/도서")
+// @RequestMapping(value="/books")
 @Transactional
-public class 도서Controller {
+public class BookController {
 
     @Autowired
-    도서Repository 도서Repository;
+    BookRepository bookRepository;
 }
-//>>> Clean Arch / Inbound Adaptor
+//>>> Clean Arch / Inbound Adaptor 
