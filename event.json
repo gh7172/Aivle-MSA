@@ -1,0 +1,8 @@
+{
+  "bookId": 100,
+  "userId": 42,
+  "title": "테스트 도서",
+  "publishDate": "2025-06-28T00:00:00Z",
+  "summary": "이것은 카프카 테스트 이벤트입니다.",
+  "state": "REQUESTED"
+}
