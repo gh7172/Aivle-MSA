@@ -1,19 +1,22 @@
 server:
-  port: 8080
+  port: 8088  # 게이트웨이로 연동되면 동일 포트, 단독 실행시 서비스별 포트 설정 가능
 
 spring:
   application:
     name: purchase
----
 
-spring:
-  profiles: default
+  profiles:
+    active: default
+
   jpa:
+    hibernate:
+      ddl-auto: update
     properties:
       hibernate:
         show_sql: true
         format_sql: true
         implicit_naming_strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyComponentPathImpl
+
   cloud:
     stream:
       kafka:
@@ -27,66 +30,14 @@ spring:
                   serde: org.apache.kafka.common.serialization.Serdes$StringSerde
                 value:
                   serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+
       bindings:
-        event-in:
-          group: purchase
-#<<< EDA / Topic Name
-          destination: aivlemsa
-#>>> EDA / Topic Name
-          contentType: application/json
         event-out:
-#<<< EDA / Topic Name
-          destination: aivlemsa
-#>>> EDA / Topic Name
+          destination: aivlemsa   # EDA topic
           contentType: application/json
 
 logging:
   level:
-    org.hibernate.type: trace
+    org.hibernate.SQL: debug
+    org.hibernate.type.descriptor.sql: trace
     org.springframework.cloud: debug
-
-api:
-  url: 
-    point: localhost:8087 
-    
-
-server:
-  port: 8089
-
----
-
-spring:
-  profiles: docker
-  jpa:
-    properties:
-      hibernate:
-        show_sql: true
-        format_sql: true
-        implicit_naming_strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyComponentPathImpl
-  cloud:
-    stream:
-      kafka:
-        binder:
-          brokers: my-kafka:9092
-        streams:
-          binder:
-            configuration:
-              default:
-                key:
-                  serde: org.apache.kafka.common.serialization.Serdes$StringSerde
-                value:
-                  serde: org.apache.kafka.common.serialization.Serdes$StringSerde
-      bindings:
-        event-in:
-          group: purchase
-          destination: aivlemsa
-          contentType: application/json
-        event-out:
-          destination: aivlemsa
-          contentType: application/json
-
-api:
-  url: 
-    point: point:8080 
-    
-

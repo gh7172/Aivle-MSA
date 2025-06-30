@@ -1,23 +1,29 @@
 package aivlemsa.domain;
 
+import javax.persistence.PrePersist;
+
 import aivlemsa.infra.AbstractEvent;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
 @ToString
-@NoArgsConstructor
 public class BookPurchaseRequested extends AbstractEvent {
 
-    private String id;
+    private Long id;
     private Long userId;
-    private String bookId;
-
+    private Long bookId;
+    private Integer price;
     public BookPurchaseRequested(Purchase aggregate) {
         super(aggregate);
         this.id = aggregate.getId();
         this.userId = aggregate.getUserId();
         this.bookId = aggregate.getBookId();
+        this.price = aggregate.getPrice(); // 가격 추가된 경우
+    }
+
+    public BookPurchaseRequested() {
+        super();
     }
 }
+
