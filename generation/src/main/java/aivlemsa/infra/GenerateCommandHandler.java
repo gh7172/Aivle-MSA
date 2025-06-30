@@ -58,7 +58,7 @@ public class GenerateCommandHandler {
             generate.setSummary(aiSummary);
 
             // 도서 표지 생성
-            String coverUrl = openAIService.generateCover(cmd.getTitle(), cmd.getSummary());
+            String coverUrl = openAIService.generateCover(cmd.getTitle(), aiSummary);
             generate.setImageUrl(coverUrl);
 
             generate.markSucceeded(aiSummary);

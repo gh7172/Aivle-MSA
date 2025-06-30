@@ -1,5 +1,7 @@
 package aivlemsa.infra;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
@@ -9,6 +11,8 @@ import reactor.core.publisher.Mono;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 // OpenAI API 호출 
 
@@ -35,30 +39,35 @@ public class OpenAIService {
     }
 
     public String generateSummary(String originalText) {
-        var req = Mono.just(new TextRequest(
+        var messages = List.of(
+            new Message("system", "You are a helpful assistant that summarizes the given book content concisely in 3 to 4 sentences in Korean"),
+            new Message("user", originalText)
+        );
+
+        var req = Mono.just(new ChatRequest(
             "gpt-4o-mini",
-            "다음 도서의 내용을 3~4줄 사이의 문장으로 요약해줘:\n" + originalText,
+            messages,
             300
         ));
 
-        TextResponse resp = webClient.post()
-            .uri("/completions")
+        ChatResponse resp = webClient.post()
+            .uri("/chat/completions")
             .header(HttpHeaders.AUTHORIZATION, "Bearer " + apiKey)
             .body(req, TextRequest.class)
             .retrieve()
             .bodyToMono(TextResponse.class)
             .block();
 
-        if (resp == null || resp.getChoices() == null || resp.getChoices().length == 0) {
+        if (resp == null || resp.getChoices() == null || resp.getChoices().isEmpty()) {
             throw new IllegalStateException("요약 생성 응답이 유효하지 않습니다.");
         }
-        return resp.getChoices()[0].getText().trim();
+        return resp.getChoices().get(0).getMessage().getContent().trim();
     }
 
 
     public String generateCover(String title, String summary) {
         var req = Mono.just(new ImageRequest(
-            "책 제목: " + title + "\n요약: " + summary + "\n이 내용을 바탕으로 책 표지 디자인",
+            "A book cover design based on the following information. Title: " + title + "\nSummary : " + summary,
             1,
             "512x512"
         ));
