@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
+import java.time.LocalDateTime;
+import java.util.*;
 
 //<<< Clean Arch / Inbound Adaptor
 @Service
@@ -20,7 +22,25 @@ public class PolicyHandler {
     @Autowired
     Repository Repository;
 
+    @Autowired
+    UserLibraryRepository userLibraryRepository;
+
+    @Autowired
+    SubscriptionModelRepository subscriptionModelRepository;
+
     @StreamListener(KafkaProcessor.INPUT)
     public void whatever(@Payload String eventString) {}
+
+    @StreamListener(value = KafkaProcessor.INPUT, condition = "headers['type']=='PurchasePaymentSucceeded'")
+    public void wheneverPurchasePaymentSucceeded_UpdateLibrary(@Payload PurchasePaymentSucceeded event) {
+        if (event == null || event.getUserId() == null || event.getBookId() == null) return;
+        UserLibrary.updateLibrary(event);
+    }
+
+    @StreamListener(value = KafkaProcessor.INPUT, condition = "headers['type']=='SubscriptionPaymentSucceeded'")
+    public void wheneverSubscriptionPaymentSucceeded_UpdateSubscription(@Payload SubscriptionPaymentSucceeded event) {
+        if (event == null || event.getUserId() == null || event.getExpirationDate() == null) return;
+        SubscriptionModel.updateSubscription(event);
+    }
 }
 //>>> Clean Arch / Inbound Adaptor
