@@ -24,8 +24,10 @@ public class Book {
 
     private String plot;
 
+    @Column(length = 2000)
     private String summary;
 
+    @Column(length = 1000)
     private String coverImage;
 
     private String state;
