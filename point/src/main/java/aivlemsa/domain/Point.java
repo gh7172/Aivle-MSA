@@ -6,6 +6,8 @@ import aivlemsa.domain.PurchasePaymentSucceeded;
 import aivlemsa.domain.SignUpBonusPointGranted;
 import aivlemsa.domain.SubscriptionPaymentFailed;
 import aivlemsa.domain.SubscriptionPaymentSucceeded;
+import aivlemsa.domain.UsedPoints;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDate;
 import java.util.Collections;
@@ -76,4 +78,19 @@ public class Point {
         chargedPoints.publishAfterCommit();
     }
 
+
+    public void usePoints(int amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("차감할 포인트는 0보다 커야 합니다.");
+        }
+
+        if (this.points == null || this.points < amount) {
+            throw new IllegalArgumentException("포인트가 부족합니다.");
+        }
+
+        this.points -= amount;
+
+        UsedPoints usedPoints = new UsedPoints(this);
+        usedPoints.publishAfterCommit();
+    }
 }

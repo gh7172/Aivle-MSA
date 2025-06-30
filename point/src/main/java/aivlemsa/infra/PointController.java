@@ -34,5 +34,17 @@ public class PointController {
         pointRepository.save(point);
         return point;
     }
+
+    @PostMapping(value = "/points/use", produces = "application/json;charset=UTF-8")
+    public Point usePoints(@RequestParam Long userId, @RequestParam int amount) {
+        System.out.println("##### /points/use called #####");
+
+        Point point = pointRepository.findById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("해당 유저의 포인트 정보가 없습니다."));
+
+        point.usePoints(amount);
+        pointRepository.save(point);
+        return point;
+    }
 }
 //>>> Clean Arch / Inbound Adaptor
