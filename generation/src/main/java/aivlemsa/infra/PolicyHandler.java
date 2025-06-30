@@ -38,6 +38,9 @@ public class PolicyHandler {
 
         RequestBookPublicationCommand command = new RequestBookPublicationCommand();
         command.setBookId(event.getBookId());
+        command.setUserId(event.getUserId());
+        command.setSummary(event.getSummary());
+        command.setTitle(event.getTitle());
         Generate.requestBookPublication(command);
     }
 }

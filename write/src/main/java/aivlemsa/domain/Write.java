@@ -5,10 +5,12 @@ import aivlemsa.WriteApplication;
 import java.util.Date;
 import javax.persistence.*;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
 @Entity
 @Table(name = "write_table")
 @Data
+@Slf4j
 //<<< DDD / Aggregate Root
 public class Write {
 
@@ -87,7 +89,7 @@ public class Write {
          */
 
         /** Example 2:  finding and process */
-
+        log.info("State update by bookId: {}", bookAdded.getBookId());
 
          repository().findById(bookAdded.getBookId()).ifPresent(write->{
              write.setState(bookAdded.getState());
@@ -115,6 +117,7 @@ public class Write {
          // ObjectMapper mapper = new ObjectMapper();
          // Map<, Object> 집필요청Map = mapper.convertValue(generationFailed.getAiId(), Map.class);
 
+        log.info("State update by bookId: {}", generationFailed.getBookId());
         repository().findById(generationFailed.getBookId()).ifPresent(write->{
             write.setState(generationFailed.getState());
             repository().save(write);
@@ -141,7 +144,9 @@ public class Write {
          // ObjectMapper mapper = new ObjectMapper();
          // Map<, Object> 집필요청Map = mapper.convertValue(generationSucceeded.getAiId(), Map.class);
 
-         repository().findById(generationSucceeded.getBookId()).ifPresent(write->{
+        log.info("State update by bookId: {}", generationSucceeded.getBookId());
+
+        repository().findById(generationSucceeded.getBookId()).ifPresent(write->{
             write.setState(generationSucceeded.getState());
             repository().save(write);
 
@@ -161,6 +166,7 @@ public class Write {
          */
 
         /** Example 2:  finding and process         */
+        log.info("State update by bookId: {}", bookAddFailed.getBookId());
 
 
 
