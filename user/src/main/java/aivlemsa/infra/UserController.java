@@ -28,5 +28,26 @@ public class UserController {
         user.setIsAuthor(request.getIsAuthor());
         return ResponseEntity.ok(userRepository.save(user));
     }
+
+    @PatchMapping("/users/{userId}/author")
+    public ResponseEntity<?> setAuthorTrue(@PathVariable Long userId) {
+        User user = userRepository.findById(userId).orElse(null);
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+        user.setIsAuthor(true);
+        userRepository.save(user);
+        return ResponseEntity.ok("isAuthor updated");
+    }
+
+    // 사용자 정보 조회 API 추가
+    @GetMapping("/users/{userId}")
+    public ResponseEntity<?> getUser(@PathVariable Long userId) {
+        User user = userRepository.findById(userId).orElse(null);
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(user);
+    }
 }
 //>>> Clean Arch / Inbound Adaptor
