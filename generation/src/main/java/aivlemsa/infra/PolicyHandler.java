@@ -27,6 +27,9 @@ public class PolicyHandler {
     @Autowired
     private ApplicationEventPublisher publisher;
 
+    @Autowiredprivate
+    GenerateCommandHandler generateCommandHandler;
+
     @StreamListener(KafkaProcessor.INPUT)
     public void whatever(@Payload String eventString) {}
 
@@ -51,6 +54,7 @@ public class PolicyHandler {
         command.setBookId(event.getBookId());
         command.setSummary(event.getSummary());
         command.setTitle(event.getTitle());
+        generateCommandHandler.handle(command);
         publisher.publishEvent(command);
         //Generate.requestBookPublication(command);
         
