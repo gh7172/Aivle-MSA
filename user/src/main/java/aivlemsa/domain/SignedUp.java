@@ -13,7 +13,7 @@ public class SignedUp extends AbstractEvent {
 
     private Long id;
 
-    public SignedUp(유저 aggregate) {
+    public SignedUp(User aggregate) {
         super(aggregate);
     }
 
