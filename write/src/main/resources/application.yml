@@ -104,4 +104,3 @@ spring:
           destination: aivlemsa
           contentType: application/json
 
-

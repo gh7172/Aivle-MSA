@@ -8,7 +8,7 @@ services:
     ports:
       - 2181:2181
   kafka:
-    image: confluentinc/cp-kafka:latest
+    image: confluentinc/cp-kafka:7.3.3
     container_name: my-kafka
     depends_on:
       - zookeeper
@@ -37,7 +37,7 @@ services:
       - ./author:/usr/src
       - ./maven-repo:/root/.m2
       
-  publish:
+  write:
     depends_on: 
       - kafka
     image: adoptopenjdk/maven-openjdk11:latest
@@ -48,7 +48,7 @@ services:
       - 8083:8083
     working_dir: /usr/src
     volumes:
-      - ./publish:/usr/src
+      - ./write:/usr/src
       - ./maven-repo:/root/.m2
       
   books:
@@ -113,12 +113,27 @@ services:
     image: adoptopenjdk/maven-openjdk11:latest
     environment:
       - SPRING_PROFILES_ACTIVE=docker
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-sk-dummy-key-for-testing}
     command: mvn spring-boot:run
     ports:
       - 8088:8088
     working_dir: /usr/src
     volumes:
       - ./generation:/usr/src
+      - ./maven-repo:/root/.m2
+
+  gateway:
+    depends_on: 
+      - kafka
+    image: adoptopenjdk/maven-openjdk11:latest
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    command: mvn spring-boot:run
+    ports:
+      - 8080:8080
+    working_dir: /usr/src
+    volumes:
+      - ./gateway:/usr/src
       - ./maven-repo:/root/.m2
       
   purchase:

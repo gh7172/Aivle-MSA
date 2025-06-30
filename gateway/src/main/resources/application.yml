@@ -12,15 +12,15 @@ spring:
         - id: author
           uri: http://localhost:8082
           predicates:
-            - Path=/작가/**, 
-        - id: publish
+            - Path=/authors/**, 
+        - id: write
           uri: http://localhost:8083
           predicates:
-            - Path=/집필/**, 
+            - Path=/write/**, 
         - id: books
           uri: http://localhost:8084
           predicates:
-            - Path=/도서/**, 
+            - Path=/books/**, 
         - id: subscription
           uri: http://localhost:8085
           predicates:
@@ -28,7 +28,7 @@ spring:
         - id: user
           uri: http://localhost:8086
           predicates:
-            - Path=/유저/**, 
+            - Path=/users/**, 
         - id: point
           uri: http://localhost:8087
           predicates:
@@ -36,7 +36,7 @@ spring:
         - id: generation
           uri: http://localhost:8088
           predicates:
-            - Path=/집필요청/**, 
+            - Path=/generation/**, 
         - id: purchase
           uri: http://localhost:8089
           predicates:
@@ -76,15 +76,15 @@ spring:
         - id: author
           uri: http://author:8080
           predicates:
-            - Path=/작가/**, 
-        - id: publish
-          uri: http://publish:8080
+            - Path=/authors/**, 
+        - id: write
+          uri: http://write:8080
           predicates:
-            - Path=/집필/**, 
+            - Path=/write/**, 
         - id: books
           uri: http://books:8080
           predicates:
-            - Path=/도서/**, 
+            - Path=/books/**, 
         - id: subscription
           uri: http://subscription:8080
           predicates:
@@ -92,7 +92,7 @@ spring:
         - id: user
           uri: http://user:8080
           predicates:
-            - Path=/유저/**, 
+            - Path=/users/**, 
         - id: point
           uri: http://point:8080
           predicates:
@@ -100,7 +100,7 @@ spring:
         - id: generation
           uri: http://generation:8080
           predicates:
-            - Path=/집필요청/**, 
+            - Path=/generation/**, 
         - id: purchase
           uri: http://purchase:8080
           predicates:
