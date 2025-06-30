@@ -1,6 +1,11 @@
 server:
   port: 8080
 
+# OpenAI API 설정
+openai:
+  api:
+    key: ${OPENAI_API_KEY:sk-dummy-key-for-testing}
+
 spring:
   application:
     name: generation
