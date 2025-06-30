@@ -37,19 +37,19 @@ public class PolicyHandler {
     public void onBookPublicationRequested(
         @Payload BookPublicationRequested event
     ) {
-        log.info("Received BookPublicationRequested 이벤트 수신신 : {}", event)
+        log.info("Received BookPublicationRequested 이벤트 수신신 : {}", event);
         
         // 1) Generate Aggregate 생성 및 저장
         Generate generate = new Generate(
             event.getBookId(), 
             event.getSummary(), 
             event.getTitle());
-        generateRepository.save(generate)
+        generateRepository.save(generate);
 
         // 2) 내부 Command 생성 및 발행
         RequestBookPublicationCommand command = new RequestBookPublicationCommand();
         command.setBookId(event.getBookId());
-        command.setSummary(event.getContentOutline());
+        command.setSummary(event.getSummary());
         command.setTitle(event.getTitle());
         publisher.publishEvent(command);
         //Generate.requestBookPublication(command);

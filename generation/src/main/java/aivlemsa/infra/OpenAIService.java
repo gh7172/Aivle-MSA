@@ -6,6 +6,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 // OpenAI API 호출 
 
 @Service
@@ -45,10 +49,10 @@ public class OpenAIService {
             .bodyToMono(TextResponse.class)
             .block();
 
-        if (resp == null || resp.getChoices().isEmpty()) {
+        if (resp == null || resp.getChoices() == null || resp.getChoices().length == 0) {
             throw new IllegalStateException("요약 생성 응답이 유효하지 않습니다.");
         }
-        return resp.getChoices().get(0).getText().trim();
+        return resp.getChoices()[0].getText().trim();
     }
 
 
@@ -75,11 +79,14 @@ public class OpenAIService {
 
 
     // --- DTO for text completions ---
-    private static record TextRequest(
-        String model,
-        String prompt,
-        int    max_tokens
-    ) {}
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    private static class TextRequest {
+        private String model;
+        private String prompt;
+        private int    max_tokens;
+    }
 
     private static class TextResponse {
         private Choice[] choices;
@@ -93,11 +100,15 @@ public class OpenAIService {
     }
 
     // --- DTO for image generations ---
-    private static record ImageRequest(
-        String prompt,
-        int    n,
-        String size
-    ) {}
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    private static class ImageRequest {
+        private String prompt;
+        private int    n;
+        private String size;
+    }
+
 
     private static class ImageResponse {
         private Data[] data;

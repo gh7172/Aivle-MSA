@@ -19,13 +19,17 @@ public class Generate {
     private String imageUrl;
     private String status;      // Requested, Succeeded, Failed
 
+    private String title;
+    private String result;
+    private String errorMessage;
+
     protected Generate() {}
 
     //<<< Clean Arch / Port Method
     public Generate(Long bookId, String summary, String title) {
         this.bookId = bookId;
         this.summary = summary;
-        this.title = title
+        this.title = title;
         this.status = "REQUESTED";
     }
 

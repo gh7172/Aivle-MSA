@@ -10,6 +10,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.messaging.MessageChannel;
+import aivlemsa.config.kafka.KafkaProcessor;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.context.ApplicationEventPublisher;
+
 //<<< Clean Arch / Inbound Adaptor
 
 @RestController
@@ -19,6 +26,9 @@ public class GenerateController {
 
     @Autowired
     GenerateRepository GenerateRepository;
+
+    @Autowired
+    GenerateCommandHandler generateCommandHandler;
 
     @RequestMapping(
         value = "/generate/requestbookpublication",
@@ -33,10 +43,15 @@ public class GenerateController {
         System.out.println(
             "##### /generate/requestBookPublication  called #####"
         );
-        Generate Generate = new Generate();
-        Generate.requestBookPublication(requestBookPublicationCommand);
-        GenerateRepository.save(Generate);
-        return Generate;
+
+        Generate generate = new Generate(
+            requestBookPublicationCommand.getBookId(),
+            requestBookPublicationCommand.getSummary(),
+            requestBookPublicationCommand.getTitle()
+        );
+        GenerateRepository.save(generate);
+        generateCommandHandler.handle(requestBookPublicationCommand);
+        return generate;
     }
 }
 //>>> Clean Arch / Inbound Adaptor
