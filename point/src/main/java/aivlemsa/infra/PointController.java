@@ -42,8 +42,21 @@ public class PointController {
         Point point = pointRepository.findById(userId)
             .orElseThrow(() -> new IllegalArgumentException("해당 유저의 포인트 정보가 없습니다."));
 
-        point.usePoints(amount);
-        pointRepository.save(point);
+        try {
+            point.usePoints(amount);
+            pointRepository.save(point);
+
+            // ✅ 성공 시 이벤트 발행
+            PaymentSucceeded succeededEvent = new PaymentSucceeded(point);
+            succeededEvent.publishAfterCommit();
+
+        } catch (IllegalArgumentException e) {
+            // ✅ 실패 시 이벤트 발행
+            PaymentFailed failedEvent = new PaymentFailed(point);
+            failedEvent.publishAfterCommit();
+
+            throw e; // 500 대신 400 에러 처리해도 OK
+        }
         return point;
     }
 }

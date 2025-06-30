@@ -44,15 +44,15 @@ public class Subscribe {
         //     .getBean(aivlemsa.external.PointService.class)
         //     .useSubscriptionPoints(point);
 
-        SubscriptionRequested subscriptionRequested = new SubscriptionRequested(
-            this
-        );
-        subscriptionRequested.publishAfterCommit();
+        // SubscriptionRequested subscriptionRequested = new SubscriptionRequested(
+        //     this
+        // );
+        // subscriptionRequested.publishAfterCommit();
 
-        SubscriptionCanceled subscriptionCanceled = new SubscriptionCanceled(
-            this
-        );
-        subscriptionCanceled.publishAfterCommit();
+        // SubscriptionCanceled subscriptionCanceled = new SubscriptionCanceled(
+        //     this
+        // );
+        // subscriptionCanceled.publishAfterCommit();
 
         UserSubUpdated userSubUpdated = new UserSubUpdated(this);
         userSubUpdated.publishAfterCommit();

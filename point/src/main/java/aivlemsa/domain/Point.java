@@ -44,33 +44,33 @@ public class Point {
         this.points = p;
     }
 
-    @PostPersist
-    public void onPostPersist() {
-        SubscriptionPaymentSucceeded subscriptionPaymentSucceeded = new SubscriptionPaymentSucceeded(
-            this
-        );
-        subscriptionPaymentSucceeded.publishAfterCommit();
+    // @PostPersist
+    // public void onPostPersist() {
+    //     SubscriptionPaymentSucceeded subscriptionPaymentSucceeded = new SubscriptionPaymentSucceeded(
+    //         this
+    //     );
+    //     subscriptionPaymentSucceeded.publishAfterCommit();
 
-        SubscriptionPaymentFailed subscriptionPaymentFailed = new SubscriptionPaymentFailed(
-            this
-        );
-        subscriptionPaymentFailed.publishAfterCommit();
+    //     SubscriptionPaymentFailed subscriptionPaymentFailed = new SubscriptionPaymentFailed(
+    //         this
+    //     );
+    //     subscriptionPaymentFailed.publishAfterCommit();
 
-        PurchasePaymentSucceeded purchasePaymentSucceeded = new PurchasePaymentSucceeded(
-            this
-        );
-        purchasePaymentSucceeded.publishAfterCommit();
+    //     PurchasePaymentSucceeded purchasePaymentSucceeded = new PurchasePaymentSucceeded(
+    //         this
+    //     );
+    //     purchasePaymentSucceeded.publishAfterCommit();
 
-        PurchasePaymentFailed purchasePaymentFailed = new PurchasePaymentFailed(
-            this
-        );
-        purchasePaymentFailed.publishAfterCommit();
+    //     PurchasePaymentFailed purchasePaymentFailed = new PurchasePaymentFailed(
+    //         this
+    //     );
+    //     purchasePaymentFailed.publishAfterCommit();
 
-        SignUpBonusPointGranted signUpBonusPointGranted = new SignUpBonusPointGranted(
-            this
-        );
-        signUpBonusPointGranted.publishAfterCommit();
-    }
+    //     SignUpBonusPointGranted signUpBonusPointGranted = new SignUpBonusPointGranted(
+    //         this
+    //     );
+    //     signUpBonusPointGranted.publishAfterCommit();
+    // }
 
     public static PointRepository repository() {
         PointRepository pointRepository = PointApplication.applicationContext.getBean(
