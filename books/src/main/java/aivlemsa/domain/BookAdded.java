@@ -20,7 +20,7 @@ public class BookAdded extends AbstractEvent {
     private String coverImage;
     private String state;
 
-    public BookAdded(도서 aggregate) {
+    public BookAdded(Book aggregate) {
         super(aggregate);
     }
 
