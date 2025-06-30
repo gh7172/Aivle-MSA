@@ -8,6 +8,7 @@ import lombok.Data;
 public class RequestBookPublicationCommand {
 
     private Long bookId;
+    private Long userId;
+    private String title;
     private String summary;
-    private String imageUrl;
 }
