@@ -61,14 +61,19 @@ public class Point {
         return pointRepository;
     }
 
-    //<<< Clean Arch / Port Method
-    public void chargePoints() {
-        //implement business logic here:
+    public void chargePoints(int amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("충전할 포인트는 0보다 커야 합니다.");
+        }
+
+        if (this.points == null) {
+            this.points = 0;
+        }
+
+        this.points += amount;
 
         ChargedPoints chargedPoints = new ChargedPoints(this);
         chargedPoints.publishAfterCommit();
     }
-    //>>> Clean Arch / Port Method
 
 }
-//>>> DDD / Aggregate Root

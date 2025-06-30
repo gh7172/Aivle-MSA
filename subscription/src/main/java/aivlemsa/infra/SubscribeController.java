@@ -66,18 +66,24 @@ public class SubscribeController {
                 });
 
             Date currentExpiry = subscribe.getSubscriptionExpiryDate();
-            LocalDate newExpiryDate;
+            System.out.println("currentExpiry = " + currentExpiry);
+            LocalDate baseDate = LocalDate.now(); // 기본값
 
             if (currentExpiry != null) {
-                newExpiryDate = currentExpiry.toInstant()
-                    .atZone(ZoneId.systemDefault())
-                    .toLocalDate()
-                    .plusDays(30);
-            } else {
-                newExpiryDate = LocalDate.now().plusDays(30);
+                try {
+                    baseDate = new java.sql.Timestamp(currentExpiry.getTime())
+                        .toInstant()
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDate();
+                } catch (Exception e) {
+                    System.out.println("만료일 변환 오류 발생: " + e.getMessage());
+                    // fallback으로 오늘 날짜 유지
+                }
             }
 
+            LocalDate newExpiryDate = baseDate.plusDays(30);
             Date newExpiry = Date.from(newExpiryDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
             subscribe.setSubscriptionExpiryDate(newExpiry);
             subscribeRepository.save(subscribe);
 
