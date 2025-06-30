@@ -7,4 +7,6 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 //<<< PoEAA / Repository
 @RepositoryRestResource(collectionResourceRel = "User", path = "User")
 public interface UserRepository
-    extends PagingAndSortingRepository<User, Long> {}
+    extends PagingAndSortingRepository<User, Long> {
+        User findByLoginId(String loginId);
+}
