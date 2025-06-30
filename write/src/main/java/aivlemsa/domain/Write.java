@@ -26,18 +26,47 @@ public class Write {
 
     private String state;
 
-    @PostPersist
-    public void onPostPersist() {
-        BookPublicationRequested bookPublicationRequested = new BookPublicationRequested(
-                this
-        );
-        bookPublicationRequested.publishAfterCommit();
-    }
+    @Transient
+    private String previousState;
+
+    @Transient
+    private boolean stateChangedByService = false; // 서비스를 통한 상태 변경 여부
 
     @PrePersist
     public void onPrePersist() {
-        BookDraftSaved bookDraftSaved = new BookDraftSaved(this);
-        bookDraftSaved.publishAfterCommit();
+        // 초기 상태 설정
+        if (this.state == null || this.state.isEmpty()) {
+            this.state = "draft";
+        }
+    }
+
+    // 최초 저장 시에는 이벤트 발행 안함
+    // @PostPersist 제거
+
+    @PreUpdate
+    public void onPreUpdate() {
+        // 업데이트 전 준비
+    }
+
+    @PostUpdate
+    public void onPostUpdate() {
+        // 오직 출간 요청 상태로 변경되고, 서비스를 통한 변경인 경우에만 이벤트 발행
+        if ("bookPublicationRequested".equals(this.state) &&
+                this.stateChangedByService &&
+                !this.state.equals(this.previousState)) {
+
+            BookPublicationRequested bookPublicationRequested = new BookPublicationRequested(this);
+            bookPublicationRequested.publishAfterCommit();
+        }
+        // 플래그 리셋
+        this.stateChangedByService = false;
+    }
+
+    // 서비스에서만 호출하는 상태 변경 메서드
+    public void changeStateByService(String newState) {
+        this.previousState = this.state;
+        this.state = newState;
+        this.stateChangedByService = true;
     }
 
     public static WriteRepository repository() {
