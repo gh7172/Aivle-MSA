@@ -28,6 +28,22 @@ public class Point {
 
     private Integer points;
 
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long id) {
+        this.userId = id;
+    }
+
+    public Integer getPoints() {
+        return points;
+    }
+
+    public void setPoints(Integer p) {
+        this.points = p;
+    }
+
     @PostPersist
     public void onPostPersist() {
         SubscriptionPaymentSucceeded subscriptionPaymentSucceeded = new SubscriptionPaymentSucceeded(

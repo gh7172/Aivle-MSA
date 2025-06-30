@@ -48,14 +48,10 @@ public class SubscribeController {
 
         // 유저 포인트 조회 (FeignClient 호출)
         Point userPoint = pointService.getUserPoints(userId);
-        System.out.println("2. 포인트 조회 결과: " + userPoint);
 
         if (userPoint != null && userPoint.getPoints() >= requiredPoints) {
-            // 포인트 차감
-            Point deduction = new Point();
-            deduction.setUserId(userId);
-            deduction.setPoints(userPoint.getPoints() - requiredPoints);
-            pointService.useSubscriptionPoints(deduction);
+            // 포인트 차감 API 호출
+            pointService.useSubscriptionPoints(userId, requiredPoints);
 
             // 구독 생성 또는 갱신
             Subscribe subscribe = subscribeRepository.findById(userId)
@@ -66,7 +62,6 @@ public class SubscribeController {
                 });
 
             Date currentExpiry = subscribe.getSubscriptionExpiryDate();
-            System.out.println("currentExpiry = " + currentExpiry);
             LocalDate baseDate = LocalDate.now(); // 기본값
 
             if (currentExpiry != null) {

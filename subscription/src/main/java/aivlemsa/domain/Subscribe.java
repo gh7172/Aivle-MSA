@@ -14,7 +14,6 @@ import javax.persistence.*;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-
 @Entity
 @Table(name = "Subscribe_table")
 @Data
@@ -24,9 +23,15 @@ public class Subscribe {
     @Id
     private Long userId;
 
+    public void setUserId(Long userId) { this.userId = userId; }
+
+
     @Temporal(TemporalType.DATE)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date subscriptionExpiryDate;
+
+    public Date getSubscriptionExpiryDate() { return subscriptionExpiryDate; }
+    public void setSubscriptionExpiryDate(Date date) { this.subscriptionExpiryDate = date; }
 
     @PostPersist
     public void onPostPersist() {
