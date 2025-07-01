@@ -14,7 +14,7 @@ public class OnUserLoggedIn extends AbstractEvent {
     private Long userId;
     private Boolean isAuthor;
 
-    public OnUserLoggedIn(유저 aggregate) {
+    public OnUserLoggedIn(User aggregate) {
         super(aggregate);
     }
 

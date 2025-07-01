@@ -14,13 +14,14 @@ import javax.persistence.*;
 import lombok.Data;
 
 @Entity
-@Table(name = "작가_table")
+@Table(name = "author_table")
 @Data
 //<<< DDD / Aggregate Root
-public class 작가 {
+public class Author {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    //@GeneratedValue(strategy = GenerationType.AUTO)
+    
     private Long userId;
 
     private String penName;
@@ -47,11 +48,11 @@ public class 작가 {
         authorRegistrationRequested.publishAfterCommit();
     }
 
-    public static 작가Repository repository() {
-        작가Repository 작가Repository = AuthorApplication.applicationContext.getBean(
-            작가Repository.class
+    public static AuthorRepository repository() {
+        AuthorRepository authorRepository = AuthorApplication.applicationContext.getBean(
+            AuthorRepository.class
         );
-        return 작가Repository;
+        return authorRepository;
     }
 }
 //>>> DDD / Aggregate Root

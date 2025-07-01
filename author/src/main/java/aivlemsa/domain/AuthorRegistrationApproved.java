@@ -13,8 +13,9 @@ public class AuthorRegistrationApproved extends AbstractEvent {
 
     private Long id;
 
-    public AuthorRegistrationApproved(작가 aggregate) {
+    public AuthorRegistrationApproved(Author aggregate) {
         super(aggregate);
+        this.id = aggregate.getUserId();
     }
 
     public AuthorRegistrationApproved() {

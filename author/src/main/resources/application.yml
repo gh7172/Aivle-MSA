@@ -4,6 +4,15 @@ server:
 spring:
   application:
     name: author
+  kafka:
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: '*'
+        # 여러 타입을 받을 경우 trusted.packages만으로 충분
+        # 단일 타입만 받을 경우 아래도 추가 가능
+        # spring.json.value.default.type: aivlemsa.domain.AuthorRegistrationApproved
 ---
 
 spring:
@@ -30,15 +39,22 @@ spring:
       bindings:
         event-in:
           group: author
-#<<< EDA / Topic Name
           destination: aivlemsa
-#>>> EDA / Topic Name
           contentType: application/json
         event-out:
-#<<< EDA / Topic Name
           destination: aivlemsa
-#>>> EDA / Topic Name
           contentType: application/json
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      group-id: author-service-v5
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        spring.json.trusted.packages: '*'
 
 logging:
   level:
@@ -80,5 +96,18 @@ spring:
         event-out:
           destination: aivlemsa
           contentType: application/json
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      group-id: author-service-v5
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        spring.json.trusted.packages: '*'
+        spring.json.value.default.type: java.lang.String
 
 

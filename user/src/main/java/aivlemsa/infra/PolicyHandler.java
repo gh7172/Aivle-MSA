@@ -2,43 +2,34 @@ package aivlemsa.infra;
 
 import aivlemsa.config.kafka.KafkaProcessor;
 import aivlemsa.domain.*;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import javax.naming.NameParser;
-import javax.naming.NameParser;
-import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.StreamListener;
-import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-//<<< Clean Arch / Inbound Adaptor
 @Service
 @Transactional
 public class PolicyHandler {
 
     @Autowired
-    유저Repository 유저Repository;
-
-    @StreamListener(KafkaProcessor.INPUT)
-    public void whatever(@Payload String eventString) {}
+    UserRepository userRepository;
 
     @StreamListener(
         value = KafkaProcessor.INPUT,
         condition = "headers['type']=='AuthorRegistrationApproved'"
     )
     public void wheneverAuthorRegistrationApproved_UpdateState(
-        @Payload AuthorRegistrationApproved authorRegistrationApproved
+        AuthorRegistrationApproved event
     ) {
-        AuthorRegistrationApproved event = authorRegistrationApproved;
-        System.out.println(
-            "\n\n##### listener UpdateState : " +
-            authorRegistrationApproved +
-            "\n\n"
-        );
+        System.out.println("##### listener UpdateState : " + event);
 
-        // Sample Logic //
-        유저.updateState(event);
+        // 실제로 isAuthor를 true로 변경
+        if (event.getId() != null) {
+            User user = userRepository.findById(event.getId()).orElse(null);
+            if (user != null) {
+                user.setIsAuthor(true);
+                userRepository.save(user);
+            }
+        }
     }
 }
-//>>> Clean Arch / Inbound Adaptor

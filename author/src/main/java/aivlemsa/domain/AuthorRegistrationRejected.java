@@ -13,7 +13,7 @@ public class AuthorRegistrationRejected extends AbstractEvent {
 
     private Long id;
 
-    public AuthorRegistrationRejected(작가 aggregate) {
+    public AuthorRegistrationRejected(Author aggregate) {
         super(aggregate);
     }
 

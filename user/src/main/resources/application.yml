@@ -1,9 +1,13 @@
-server:
-  port: 8080
-
 spring:
   application:
     name: user
+  kafka:
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: '*'
+        spring.json.value.default.type: aivlemsa.domain.AuthorRegistrationApproved
 ---
 
 spring:
@@ -30,14 +34,12 @@ spring:
       bindings:
         event-in:
           group: user
-#<<< EDA / Topic Name
           destination: aivlemsa
-#>>> EDA / Topic Name
           contentType: application/json
+          consumer:
+            auto-offset-reset: latest
         event-out:
-#<<< EDA / Topic Name
           destination: aivlemsa
-#>>> EDA / Topic Name
           contentType: application/json
 
 logging:
@@ -77,8 +79,13 @@ spring:
           group: user
           destination: aivlemsa
           contentType: application/json
+          consumer:
+            auto-offset-reset: latest
         event-out:
           destination: aivlemsa
           contentType: application/json
+
+server:
+  port: 8086
 
 

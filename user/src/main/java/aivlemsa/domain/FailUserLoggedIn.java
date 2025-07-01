@@ -13,7 +13,7 @@ public class FailUserLoggedIn extends AbstractEvent {
 
     private Long id;
 
-    public FailUserLoggedIn(유저 aggregate) {
+    public FailUserLoggedIn(User aggregate) {
         super(aggregate);
     }
 

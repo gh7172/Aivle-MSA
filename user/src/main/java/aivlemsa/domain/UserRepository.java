@@ -5,6 +5,8 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 //<<< PoEAA / Repository
-@RepositoryRestResource(collectionResourceRel = "작가", path = "작가")
-public interface 작가Repository
-    extends PagingAndSortingRepository<작가, Long> {}
+@RepositoryRestResource(collectionResourceRel = "User", path = "User")
+public interface UserRepository
+    extends PagingAndSortingRepository<User, Long> {
+        User findByLoginId(String loginId);
+}

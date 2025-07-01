@@ -7,11 +7,11 @@ import org.springframework.hateoas.server.RepresentationModelProcessor;
 import org.springframework.stereotype.Component;
 
 @Component
-public class 작가HateoasProcessor
-    implements RepresentationModelProcessor<EntityModel<작가>> {
+public class AuthorHateoasProcessor
+    implements RepresentationModelProcessor<EntityModel<Author>> {
 
     @Override
-    public EntityModel<작가> process(EntityModel<작가> model) {
+    public EntityModel<Author> process(EntityModel<Author> model) {
         return model;
     }
 }

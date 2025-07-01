@@ -14,10 +14,10 @@ import javax.persistence.*;
 import lombok.Data;
 
 @Entity
-@Table(name = "유저_table")
+@Table(name = "User_table")
 @Data
 //<<< DDD / Aggregate Root
-public class 유저 {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -41,11 +41,11 @@ public class 유저 {
         failUserLoggedIn.publishAfterCommit();
     }
 
-    public static 유저Repository repository() {
-        유저Repository 유저Repository = UserApplication.applicationContext.getBean(
-            유저Repository.class
+    public static UserRepository repository() {
+        UserRepository userRepository = UserApplication.applicationContext.getBean(
+            UserRepository.class
         );
-        return 유저Repository;
+        return userRepository;
     }
 
     //<<< Clean Arch / Port Method
@@ -74,6 +74,25 @@ public class 유저 {
 
     }
     //>>> Clean Arch / Port Method
+
+    public String getLoginId() {
+        return loginId;
+    }
+    public void setLoginId(String loginId) {
+        this.loginId = loginId;
+    }
+    public String getPassword() {
+        return password;
+    }
+    public void setPassword(String password) {
+        this.password = password;
+    }
+    public Boolean getIsAuthor() {
+        return isAuthor;
+    }
+    public void setIsAuthor(Boolean isAuthor) {
+        this.isAuthor = isAuthor;
+    }
 
 }
 //>>> DDD / Aggregate Root
