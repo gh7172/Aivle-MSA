@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import javax.persistence.*;
 import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 @Table(name = "Subscribe_table")
@@ -20,31 +21,38 @@ import lombok.Data;
 public class Subscribe {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long userId;
 
+    public void setUserId(Long userId) { this.userId = userId; }
+
+
+    @Temporal(TemporalType.DATE)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date subscriptionExpiryDate;
+
+    public Date getSubscriptionExpiryDate() { return subscriptionExpiryDate; }
+    public void setSubscriptionExpiryDate(Date date) { this.subscriptionExpiryDate = date; }
 
     @PostPersist
     public void onPostPersist() {
         //Following code causes dependency to external APIs
         // it is NOT A GOOD PRACTICE. instead, Event-Policy mapping is recommended.
 
-        aivlemsa.external.Point point = new aivlemsa.external.Point();
-        // mappings goes here
-        SubscriptionApplication.applicationContext
-            .getBean(aivlemsa.external.PointService.class)
-            .useSubscriptionPoints(point);
+        // aivlemsa.external.Point point = new aivlemsa.external.Point();
+        // // mappings goes here
+        // SubscriptionApplication.applicationContext
+        //     .getBean(aivlemsa.external.PointService.class)
+        //     .useSubscriptionPoints(point);
 
-        SubscriptionRequested subscriptionRequested = new SubscriptionRequested(
-            this
-        );
-        subscriptionRequested.publishAfterCommit();
+        // SubscriptionRequested subscriptionRequested = new SubscriptionRequested(
+        //     this
+        // );
+        // subscriptionRequested.publishAfterCommit();
 
-        SubscriptionCanceled subscriptionCanceled = new SubscriptionCanceled(
-            this
-        );
-        subscriptionCanceled.publishAfterCommit();
+        // SubscriptionCanceled subscriptionCanceled = new SubscriptionCanceled(
+        //     this
+        // );
+        // subscriptionCanceled.publishAfterCommit();
 
         UserSubUpdated userSubUpdated = new UserSubUpdated(this);
         userSubUpdated.publishAfterCommit();

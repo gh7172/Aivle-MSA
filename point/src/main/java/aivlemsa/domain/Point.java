@@ -6,6 +6,8 @@ import aivlemsa.domain.PurchasePaymentSucceeded;
 import aivlemsa.domain.SignUpBonusPointGranted;
 import aivlemsa.domain.SubscriptionPaymentFailed;
 import aivlemsa.domain.SubscriptionPaymentSucceeded;
+import aivlemsa.domain.UsedPoints;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDate;
 import java.util.Collections;
@@ -22,38 +24,53 @@ import lombok.Data;
 public class Point {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long userId;
 
     private Integer points;
 
-    @PostPersist
-    public void onPostPersist() {
-        SubscriptionPaymentSucceeded subscriptionPaymentSucceeded = new SubscriptionPaymentSucceeded(
-            this
-        );
-        subscriptionPaymentSucceeded.publishAfterCommit();
-
-        SubscriptionPaymentFailed subscriptionPaymentFailed = new SubscriptionPaymentFailed(
-            this
-        );
-        subscriptionPaymentFailed.publishAfterCommit();
-
-        PurchasePaymentSucceeded purchasePaymentSucceeded = new PurchasePaymentSucceeded(
-            this
-        );
-        purchasePaymentSucceeded.publishAfterCommit();
-
-        PurchasePaymentFailed purchasePaymentFailed = new PurchasePaymentFailed(
-            this
-        );
-        purchasePaymentFailed.publishAfterCommit();
-
-        SignUpBonusPointGranted signUpBonusPointGranted = new SignUpBonusPointGranted(
-            this
-        );
-        signUpBonusPointGranted.publishAfterCommit();
+    public Long getUserId() {
+        return userId;
     }
+
+    public void setUserId(Long id) {
+        this.userId = id;
+    }
+
+    public Integer getPoints() {
+        return points;
+    }
+
+    public void setPoints(Integer p) {
+        this.points = p;
+    }
+
+    // @PostPersist
+    // public void onPostPersist() {
+    //     SubscriptionPaymentSucceeded subscriptionPaymentSucceeded = new SubscriptionPaymentSucceeded(
+    //         this
+    //     );
+    //     subscriptionPaymentSucceeded.publishAfterCommit();
+
+    //     SubscriptionPaymentFailed subscriptionPaymentFailed = new SubscriptionPaymentFailed(
+    //         this
+    //     );
+    //     subscriptionPaymentFailed.publishAfterCommit();
+
+    //     PurchasePaymentSucceeded purchasePaymentSucceeded = new PurchasePaymentSucceeded(
+    //         this
+    //     );
+    //     purchasePaymentSucceeded.publishAfterCommit();
+
+    //     PurchasePaymentFailed purchasePaymentFailed = new PurchasePaymentFailed(
+    //         this
+    //     );
+    //     purchasePaymentFailed.publishAfterCommit();
+
+    //     SignUpBonusPointGranted signUpBonusPointGranted = new SignUpBonusPointGranted(
+    //         this
+    //     );
+    //     signUpBonusPointGranted.publishAfterCommit();
+    // }
 
     public static PointRepository repository() {
         PointRepository pointRepository = PointApplication.applicationContext.getBean(
@@ -62,14 +79,34 @@ public class Point {
         return pointRepository;
     }
 
-    //<<< Clean Arch / Port Method
-    public void chargePoints() {
-        //implement business logic here:
+    public void chargePoints(int amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("충전할 포인트는 0보다 커야 합니다.");
+        }
+
+        if (this.points == null) {
+            this.points = 0;
+        }
+
+        this.points += amount;
 
         ChargedPoints chargedPoints = new ChargedPoints(this);
         chargedPoints.publishAfterCommit();
     }
-    //>>> Clean Arch / Port Method
 
+
+    public void usePoints(int amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("차감할 포인트는 0보다 커야 합니다.");
+        }
+
+        if (this.points == null || this.points < amount) {
+            throw new IllegalArgumentException("포인트가 부족합니다.");
+        }
+
+        this.points -= amount;
+
+        UsedPoints usedPoints = new UsedPoints(this);
+        usedPoints.publishAfterCommit();
+    }
 }
-//>>> DDD / Aggregate Root
