@@ -37,10 +37,10 @@ public class PolicyHandler {
         UserLibrary.updateLibrary(event);
     }
 
-    @StreamListener(value = KafkaProcessor.INPUT, condition = "headers['type']=='SubscriptionPaymentSucceeded'")
-    public void wheneverSubscriptionPaymentSucceeded_UpdateSubscription(@Payload SubscriptionPaymentSucceeded event) {
-        if (event == null || event.getUserId() == null || event.getExpirationDate() == null) return;
-        SubscriptionModel.updateSubscription(event);
+    @StreamListener(value = KafkaProcessor.INPUT, condition = "headers['type']=='UserSubUpdated'")
+    public void wheneverUserSubUpdated_UpdateUserSubscription(@Payload UserSubUpdated event) {
+        if (event == null || event.getUserId() == null || event.getSubscriptionExpiryDate() == null) return;
+        SubscriptionModel.updateUserSubscription(event);
     }
 }
 //>>> Clean Arch / Inbound Adaptor
