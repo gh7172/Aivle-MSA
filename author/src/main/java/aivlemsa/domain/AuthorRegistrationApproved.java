@@ -15,6 +15,7 @@ public class AuthorRegistrationApproved extends AbstractEvent {
 
     public AuthorRegistrationApproved(Author aggregate) {
         super(aggregate);
+        this.id = aggregate.getUserId();
     }
 
     public AuthorRegistrationApproved() {
