@@ -6,9 +6,9 @@ import javax.persistence.*;
 
 import aivlemsa.infra.OpenAIService;
 import lombok.Data;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Entity
@@ -17,16 +17,27 @@ import java.util.Optional;
 @Slf4j
 //<<< DDD / Aggregate Root
 public class Generate {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long bookId;
-    private String summary;
-    private String status;      // Requested, Succeeded, Failed
+
+    private Long userId;
+
     private String title;
-    private String result;
-    @Column(length = 50000)
-    private String imageUrl;
+
+    private LocalDate publishDate;
+
+    @Lob
+    private String text;
+
+    @Column(length = 2000)
+    private String summary;
+
+    @Column(length = 1000)
+    private String coverImage;
+
+    private String state;
+
 
     public static GenerateRepository repository() {
         GenerateRepository GenerateRepository = GenerationApplication.applicationContext.getBean(
@@ -51,17 +62,21 @@ public class Generate {
         // AI 이미지 생성, 요약 확인 후 분기 Success, Failed
         try {
             // 도서 내용 요약
-            String aiSummary = openAIService().generateSummary(requestBookPublicationCommand.getSummary());
+            String aiSummary = openAIService().generateSummary(requestBookPublicationCommand.getText());
 
             // 도서 표지 생성
-            String coverUrl = openAIService().generateCover(requestBookPublicationCommand.getTitle(), requestBookPublicationCommand.getSummary());
+            String coverUrl = openAIService().generateCover(requestBookPublicationCommand.getTitle(), requestBookPublicationCommand.getText());
 
 
             // GenerationSucceeded 이벤트 생성 및 커밋 이후 발행
             GenerationSucceeded generationSucceeded = new GenerationSucceeded();
             generationSucceeded.setBookId(requestBookPublicationCommand.getBookId());
             generationSucceeded.setSummary(aiSummary);
-            generationSucceeded.setImageUrl(coverUrl);
+            generationSucceeded.setCoverImage(coverUrl);
+            generationSucceeded.setText(requestBookPublicationCommand.getText());
+            generationSucceeded.setUserId(requestBookPublicationCommand.getUserId());
+            generationSucceeded.setPublishDate(requestBookPublicationCommand.getPublishDate());
+            generationSucceeded.setTitle(requestBookPublicationCommand.getTitle());
             generationSucceeded.setState("GenerationSucceeded");
             generationSucceeded.publishAfterCommit();
 
@@ -75,6 +90,12 @@ public class Generate {
             GenerationFailed generationFailed = new GenerationFailed();
             generationFailed.setBookId(requestBookPublicationCommand.getBookId());
             generationFailed.setState(error);
+            generationFailed.setSummary(null);
+            generationFailed.setCoverImage(null);
+            generationFailed.setText(requestBookPublicationCommand.getText());
+            generationFailed.setUserId(requestBookPublicationCommand.getUserId());
+            generationFailed.setPublishDate(requestBookPublicationCommand.getPublishDate());
+            generationFailed.setTitle(requestBookPublicationCommand.getTitle());
             generationFailed.publishAfterCommit();
 
             log.error("GenerationFailed scheduled for publishAfterCommit for bookId={}: {}",
