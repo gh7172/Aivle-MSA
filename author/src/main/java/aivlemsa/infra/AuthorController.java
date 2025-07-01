@@ -56,19 +56,16 @@ public class AuthorController {
         if (request.isApproved()) {
             if (author != null) {
                 AuthorRegistrationApproved event = new AuthorRegistrationApproved(author);
-                // Kafka로 aivlemsa 토픽에 이벤트 발행 (타입 헤더 추가)
-                Message<AuthorRegistrationApproved> approvedMsg = MessageBuilder
-                    .withPayload(event)
-                    .setHeader("__TypeId__", "aivlemsa.domain.AuthorRegistrationApproved")
-                    .setHeader("type", "AuthorRegistrationApproved")
-                    .build();
-                System.out.println(">>> 승인 메시지 발행: " + approvedMsg); // 로그 추가
-                kafkaTemplate.send("aivlemsa", approvedMsg);
+                // Kafka로 aivlemsa 토픽에 이벤트 발행 (페이로드만 전송)
+                System.out.println(">>> 승인 이벤트 발행: " + event); // 로그 추가
+                kafkaTemplate.send("aivlemsa", event);
             }
             return ResponseEntity.ok("작가 등록 승인");
         } else {
-            // Kafka로 거절 이벤트 발행 (타입 헤더 추가)
-            kafkaTemplate.send("author-registration-rejected", approveMsg);
+            // Kafka로 거절 이벤트 발행 (페이로드만 전송)
+            AuthorRegistrationRejected event = new AuthorRegistrationRejected(author);
+            System.out.println(">>> 거절 이벤트 발행: " + event); // 로그 추가
+            kafkaTemplate.send("aivlemsa", event);
             return ResponseEntity.ok("작가 등록 거절");
         }
     }

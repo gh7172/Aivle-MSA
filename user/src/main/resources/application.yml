@@ -34,14 +34,12 @@ spring:
       bindings:
         event-in:
           group: user
-#<<< EDA / Topic Name
           destination: aivlemsa
-#>>> EDA / Topic Name
           contentType: application/json
+          consumer:
+            auto-offset-reset: latest
         event-out:
-#<<< EDA / Topic Name
           destination: aivlemsa
-#>>> EDA / Topic Name
           contentType: application/json
 
 logging:
@@ -81,6 +79,8 @@ spring:
           group: user
           destination: aivlemsa
           contentType: application/json
+          consumer:
+            auto-offset-reset: latest
         event-out:
           destination: aivlemsa
           contentType: application/json
