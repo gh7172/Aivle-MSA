@@ -49,3 +49,17 @@
 .applyButton:hover {
   background-color: #4a148c;
 }
+
+.menuLink {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.menuLink .infoRow {
+  transition: background-color 0.2s;
+}
+
+.menuLink:hover .infoRow {
+  background-color: #f9f9f9;
+}

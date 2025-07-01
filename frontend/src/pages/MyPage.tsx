@@ -16,6 +16,12 @@ const MyPage: React.FC = () => {
     <div className={styles.container}>
       <h1 className={styles.title}>{user?.name}님의 마이페이지</h1>
       <div className={styles.card}>
+        <Link to="/my-subscriptions" className={styles.menuLink}>
+          <div className={styles.infoRow}>
+            <strong>내가 구독한 책</strong>
+            <span>&gt;</span>
+          </div>
+        </Link>
         <div className={styles.infoRow}>
           <strong>포인트</strong>
           <span>{points.toLocaleString()} P</span>

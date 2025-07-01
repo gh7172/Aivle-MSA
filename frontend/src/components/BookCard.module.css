@@ -46,3 +46,26 @@
   color: #666;
   margin: 0;
 }
+
+.badgeBase {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+/* BEST 마크 */
+.bestsellerBadge {
+  composes: badgeBase; /* 기본 스타일 상속 */
+  background-color: #ff4757;
+}
+
+/* NEW 마크 */
+.newBadge {
+  composes: badgeBase; /* 기본 스타일 상속 */
+  background-color: #44bd32;
+}

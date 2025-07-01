@@ -15,6 +15,7 @@ interface UserState {
   isAuthenticated: boolean;
   roles: string[]; // 👈 사용자 역할을 저장할 배열 (예: ['SUBSCRIBER', 'WRITER'])
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
+  subscribedBookIds: string[];
 }
 
 // --- 비동기 Thunk ---
@@ -39,23 +40,24 @@ export const fetchUserProfile = createAsyncThunk('user/fetchProfile', async (_, 
   }
 });
 
-// const initialState: UserState = {
-//   userInfo: { id: 'subscriber-user', name: '김독자' },
-//   points: 1000,
-//   isKtCustomer: false,
-//   isAuthenticated: true, 
-//   roles: ['SUBSCRIBER'], // 👈 역할을 SUBSCRIBER로 설정
-//   status: 'succeeded',
-// };
-
 const initialState: UserState = {
-  userInfo: { id: 'writer-user', name: '김작가' },
-  points: 5000,
-  isKtCustomer: true,
+  userInfo: { id: 'subscriber-user', name: '김독자' },
+  points: 1000,
+  isKtCustomer: false,
   isAuthenticated: true, 
-  roles: ['SUBSCRIBER', 'WRITER'], // 👈 여기에 'WRITER' 역할을 추가합니다.
+  roles: ['SUBSCRIBER'], // 👈 역할을 SUBSCRIBER로 설정
+  subscribedBookIds: ['best-book-1'], 
   status: 'succeeded',
 };
+
+// const initialState: UserState = {
+//   userInfo: { id: 'writer-user', name: '김작가' },
+//   points: 5000,
+//   isKtCustomer: true,
+//   isAuthenticated: true, 
+//   roles: ['SUBSCRIBER', 'WRITER'], // 👈 여기에 'WRITER' 역할을 추가합니다.
+//   status: 'succeeded',
+// };
 
 // --- 초기 상태 ---
 // 실제 운영 환경에서 사용될 초기 상태입니다.

@@ -1,6 +1,7 @@
 import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../store/store';
+import MySubscriptionsPage from '../pages/MySubscriptionsPage';
 
 // 페이지 임포트
 import HomePage from '../pages/HomePage';
@@ -26,6 +27,7 @@ const AppRouter = () => {
         { path: 'book/:bookId', element: <BookDetailPage /> },
         { path: 'subscribe', element: <SubscriptionPage /> },
         { path: 'mypage', element: <MyPage /> },
+        { path: 'my-subscriptions', element: <MySubscriptionsPage /> },
         { path: 'author-apply', element: <AuthorApplicationPage /> },
         // 👇 ADMIN 역할이 있을 때만 접근 가능한 경로
         { path: 'admin', element: roles.includes('ADMIN') ? <AdminPage /> : <Navigate to="/" /> },
