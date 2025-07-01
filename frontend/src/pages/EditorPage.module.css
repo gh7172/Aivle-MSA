@@ -1,0 +1,107 @@
+/* 전체 페이지 배경 설정 */
+.editorWrapper {
+  width: 100%;
+  background-color: #f8f9fa;
+  padding: 2rem 0 8rem 0; /* 하단 푸터 높이만큼 추가 여백 확보 */
+}
+
+/* 글쓰기 영역을 중앙에 배치 */
+.editorContainer {
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: white;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* 제목 입력 영역 */
+.titleArea {
+  padding: 2rem 2.5rem 1.5rem 2.5rem;
+  border-bottom: 1px solid #f1f3f5;
+}
+
+.titleInput {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 2.75rem; /* 제목 폰트 크기 대폭 확대 */
+  font-weight: 700;
+  color: #212529;
+}
+
+.titleInput::placeholder {
+  color: #ced4da;
+}
+
+/* Quill 에디터의 내부 클래스 스타일링 */
+.editorContainer :global(.ql-toolbar) {
+  border: none;
+  border-bottom: 1px solid #f1f3f5;
+  padding: 1rem 1.5rem;
+  background-color: white;
+  position: sticky; /* 스크롤 시 툴바 상단 고정 */
+  top: 68px; /* MainLayout 헤더 높이만큼 띄움 */
+  z-index: 5;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.editorContainer :global(.ql-container) {
+  border: none;
+}
+
+.editorContainer :global(.ql-editor) {
+  min-height: 50vh; /* 화면 높이에 비례하여 최소 높이 설정 */
+  padding: 2.5rem;
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #343a40;
+}
+
+.editorContainer :global(.ql-editor.ql-blank::before) {
+  color: #adb5bd;
+  font-style: normal;
+  left: 2.5rem;
+  top: 2.5rem;
+}
+
+/* 하단 출간 요청 버튼 영역 */
+.editorFooter {
+  position: fixed; /* 화면 하단에 고정 */
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 1rem 0;
+  border-top: 1px solid #e9ecef;
+  backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: flex-end;
+  z-index: 10;
+}
+
+.publishButton {
+  background-color: #6a1b9a;
+  color: white;
+  padding: 0.8rem 2rem;
+  margin-right: 5%; /* 오른쪽 여백 */
+  border: none;
+  border-radius: 25px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 4px 15px rgba(106, 27, 154, 0.2);
+}
+
+.publishButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(106, 27, 154, 0.3);
+}
+
+.publishButton:disabled {
+  background-color: #9e9e9e;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}

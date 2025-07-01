@@ -1,0 +1,85 @@
+.container {
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 0 2rem;
+}
+
+.bookDetail {
+  display: flex;
+  gap: 3rem;
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+}
+
+.coverImage {
+  width: 300px;
+  height: 420px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.info {
+  flex: 1;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+}
+
+.author {
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: #555;
+  margin: 0 0 1.5rem 0;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 1.5rem;
+}
+
+.summary {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #333;
+}
+
+.meta {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #888;
+}
+
+.subscribeBox {
+  margin-top: 2rem;
+  background-color: #f9f9f9;
+  padding: 1.5rem;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.price {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #6a1b9a;
+}
+
+.subscribeButton {
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  background-color: #6a1b9a;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.subscribeButton:hover {
+  background-color: #4a148c;
+}

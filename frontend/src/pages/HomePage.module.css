@@ -1,0 +1,35 @@
+.homeContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.pointInfo {
+  background-color: white;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  font-size: 1.2rem;
+  text-align: right;
+}
+.point {
+  font-weight: bold;
+  margin-left: 0.5rem;
+  color: #6a1b9a;
+}
+.sectionTitle {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 0.5rem;
+}
+.bookListHorizontal {
+  display: flex;
+  overflow-x: auto;
+  gap: 1.5rem;
+  padding-bottom: 1rem;
+  margin-bottom: 2rem;
+}
+.bookListGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.5rem;
+}

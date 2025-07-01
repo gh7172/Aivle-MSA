@@ -1,0 +1,60 @@
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #fff;
+  border-bottom: 1px solid #eee;
+}
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-decoration: none;
+  color: #333;
+}
+.navLink {
+  margin: 0 1rem;
+  text-decoration: none;
+  color: #555;
+}
+.welcome {
+  margin: 0 1rem;
+}
+.logoutButton {
+  padding: 0.5rem 1rem;
+  border: none;
+  background-color: #333;
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+}
+.mainContent {
+  flex-grow: 1;
+  padding: 2rem;
+  background-color: #f9f9f9;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.subscribeLink {
+  background-color: #f3e5f5;
+  color: #6a1b9a;
+  padding: 0.6rem 1rem;
+  border-radius: 20px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.subscribeLink:hover {
+  background-color: #e1bee7;
+}

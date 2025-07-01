@@ -1,0 +1,40 @@
+.container {
+  display: flex;
+  justify-content: center;
+  padding-top: 2rem;
+}
+.formBox {
+  width: 100%;
+  max-width: 700px;
+  background: white;
+  padding: 2.5rem;
+  border-radius: 12px;
+}
+.title {
+  margin-top: 0;
+}
+.subtitle {
+  color: #666;
+  margin-bottom: 2rem;
+}
+.textarea {
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: inherit;
+  resize: vertical;
+}
+.submitButton {
+  width: 100%;
+  padding: 1rem;
+  margin-top: 1rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: white;
+  background-color: #6a1b9a;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
