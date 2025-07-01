@@ -7,8 +7,9 @@ import java.time.LocalDateTime;
 
 @Data
 @ToString
-public class SubscriptionPaymentSucceeded extends AbstractEvent {
+public class UserSubUpdated extends AbstractEvent {
 
+    private String timestamp;
     private Long userId;
-    private LocalDateTime expirationDate;
+    private LocalDateTime subscriptionExpiryDate;
 } 

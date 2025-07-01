@@ -18,13 +18,15 @@ public class SubscriptionModel {
     private LocalDateTime expirationDate;
     private LocalDateTime startDate;
 
-    public static void updateSubscription(SubscriptionPaymentSucceeded event) {
+    public static void updateUserSubscription(UserSubUpdated event) {
         SubscriptionModelRepository repo = ReadApplication.applicationContext.getBean(SubscriptionModelRepository.class);
         Optional<SubscriptionModel> subscription = repo.findByUserId(event.getUserId());
         SubscriptionModel entity = subscription.orElse(new SubscriptionModel());
         entity.setUserId(event.getUserId());
-        entity.setExpirationDate(event.getExpirationDate());
-        entity.setStartDate(LocalDateTime.now());
+        entity.setExpirationDate(event.getSubscriptionExpiryDate());
+        if (entity.getStartDate() == null) {
+            entity.setStartDate(LocalDateTime.now());
+        }
         repo.save(entity);
     }
 } 
