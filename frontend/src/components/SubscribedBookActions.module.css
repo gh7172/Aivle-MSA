@@ -1,0 +1,36 @@
+.actionsContainer {
+  display: flex;
+  gap: 0.8rem;
+  margin-top: 1rem;
+}
+
+.actionButton {
+  flex-grow: 1;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.2s ease-in-out;
+}
+
+.download {
+  background-color: white;
+  color: #555;
+  border-color: #ddd;
+}
+
+.download:hover {
+  background-color: #f8f9fa;
+  border-color: #ccc;
+}
+
+.read {
+  background-color: #6a1b9a;
+  color: white;
+}
+
+.read:hover {
+  background-color: #4a148c;
+}

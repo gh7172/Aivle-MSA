@@ -1,5 +1,5 @@
 .container {
-  max-width: 1200px;
+  max-width: 900px;
   margin: 0 auto;
 }
 
@@ -11,8 +11,51 @@
   border-bottom: 1px solid #eee;
 }
 
-.bookListGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+.listContainer {
+  display: flex;
+  flex-direction: column;
   gap: 1.5rem;
+}
+
+.bookItem {
+  display: flex;
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  gap: 1.5rem;
+}
+
+.coverImage {
+  width: 100px;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.bookInfo {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.bookTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 0.25rem 0;
+}
+
+.author {
+  font-size: 1rem;
+  color: #666;
+  margin: 0;
+  flex-grow: 1;
+}
+
+.emptyMessage {
+  padding: 3rem;
+  text-align: center;
+  color: #888;
+  font-size: 1.1rem;
 }
