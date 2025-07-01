@@ -1,5 +1,5 @@
 server:
-  port: 8088  # 게이트웨이로 연동되면 동일 포트, 단독 실행시 서비스별 포트 설정 가능
+  port: 8089
 
 spring:
   application:
@@ -9,8 +9,6 @@ spring:
     active: default
 
   jpa:
-    hibernate:
-      ddl-auto: update
     properties:
       hibernate:
         show_sql: true
@@ -25,19 +23,20 @@ spring:
         streams:
           binder:
             configuration:
-              default:
-                key:
-                  serde: org.apache.kafka.common.serialization.Serdes$StringSerde
-                value:
-                  serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+              default.key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+              default.value.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
 
       bindings:
+        event-in:
+          group: purchase
+          destination: aivlemsa
+          contentType: application/json
         event-out:
-          destination: aivlemsa   # EDA topic
+          destination: aivlemsa
           contentType: application/json
 
 logging:
   level:
-    org.hibernate.SQL: debug
-    org.hibernate.type.descriptor.sql: trace
+    org.hibernate.type: trace
     org.springframework.cloud: debug
+

@@ -1,12 +1,9 @@
 package aivlemsa.domain;
 
-import aivlemsa.domain.*;
 import aivlemsa.infra.AbstractEvent;
-import java.time.LocalDate;
-import java.util.*;
-import lombok.*;
+import lombok.Data;
+import lombok.ToString;
 
-//<<< DDD / Domain Event
 @Data
 @ToString
 public class PurchasePaymentSucceeded extends AbstractEvent {
@@ -16,10 +13,11 @@ public class PurchasePaymentSucceeded extends AbstractEvent {
 
     public PurchasePaymentSucceeded(Point aggregate) {
         super(aggregate);
+        this.userId = aggregate.getUserId();
+        this.points = aggregate.getPoints();
     }
 
     public PurchasePaymentSucceeded() {
         super();
     }
 }
-//>>> DDD / Domain Event

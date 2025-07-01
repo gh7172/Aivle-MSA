@@ -33,7 +33,22 @@ public class PolicyHandler {
             "\n\n##### listener HandleSignedUp : " + signedUp + "\n\n"
         );
         // Sample Logic //
+    
+    @StreamListener(
+        value = KafkaProcessor.INPUT,
+        condition = "headers['type']=='PurchaseRequested'"
+    )
+    public void wheneverPurchaseRequested_ChargePoint(@Payload BookPurchaseRequested event) {
+        log.info("💸 포인트 차감 요청 수신: {}", event);
+
+        pointRepository.findById(event.getUserId()).ifPresent(point -> {
+            point.deductPoints(event.getPrice());
+            pointRepository.save(point); // 상태 저장
+        });
+    }
 
     }
+
+
 }
 //>>> Clean Arch / Inbound Adaptor

@@ -73,3 +73,15 @@ public class Point {
 
 }
 //>>> DDD / Aggregate Root
+
+public void deductPoints(Integer price) {
+    if (this.points >= price) {
+        this.points -= price;
+
+        PurchasePaymentSucceeded successEvent = new PurchasePaymentSucceeded(this);
+        successEvent.publishAfterCommit();
+    } else {
+        PurchasePaymentFailed failedEvent = new PurchasePaymentFailed(this);
+        failedEvent.publishAfterCommit();
+    }
+}

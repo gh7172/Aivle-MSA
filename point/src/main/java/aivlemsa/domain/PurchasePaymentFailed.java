@@ -1,12 +1,9 @@
 package aivlemsa.domain;
 
-import aivlemsa.domain.*;
 import aivlemsa.infra.AbstractEvent;
-import java.time.LocalDate;
-import java.util.*;
-import lombok.*;
+import lombok.Data;
+import lombok.ToString;
 
-//<<< DDD / Domain Event
 @Data
 @ToString
 public class PurchasePaymentFailed extends AbstractEvent {
@@ -17,10 +14,12 @@ public class PurchasePaymentFailed extends AbstractEvent {
 
     public PurchasePaymentFailed(Point aggregate) {
         super(aggregate);
+        this.userId = aggregate.getUserId();
+        this.points = aggregate.getPoints();
+        this.state = "FAILURE"; // 상태 문자열은 실제 비즈니스 요구에 맞게 설정
     }
 
     public PurchasePaymentFailed() {
         super();
     }
 }
-//>>> DDD / Domain Event
