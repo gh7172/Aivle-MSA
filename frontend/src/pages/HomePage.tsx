@@ -5,7 +5,7 @@ import { fetchBooks } from '../store/slices/bookSlice';
 import { fetchUserProfile } from '../store/slices/userSlice';
 import type { RootState, AppDispatch } from '../store/store';
 import BookCard from '../components/BookCard';
-import SkeletonCard from '../components/SkeletonCard'; // 👈 스켈레톤 카드 임포트
+import SkeletonCard from '../components/SkeletonCard';
 import styles from './HomePage.module.css';
 
 // 로딩 중에 보여줄 스켈레톤 UI 컴포넌트
@@ -54,11 +54,6 @@ const HomePage: React.FC = () => {
 
   return (
     <div className={styles.homeContainer}>
-      <div className={styles.pointInfo}>
-        <span>내 보유 포인트:</span>
-        <span className={styles.point}>{points.toLocaleString()} P</span>
-      </div>
-
       <h2 className={styles.sectionTitle}>🔥 베스트셀러</h2>
       <div className={styles.bookListHorizontal}>
         {bestsellers.map((book) => (

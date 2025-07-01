@@ -63,3 +63,8 @@
 .menuLink:hover .infoRow {
   background-color: #f9f9f9;
 }
+
+.subscribed {
+  color: #2e7d32; /* 구독 중일 때 초록색으로 강조 */
+  font-weight: bold;
+}

@@ -33,3 +33,32 @@
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 1.5rem;
 }
+
+.pointInfo {
+  background-color: white;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  font-size: 1.2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ... 기존 .point 스타일 ... */
+
+/* 👇 '포인트 충전' 버튼 스타일 추가 */
+.chargeButton {
+  background-color: #f3e5f5;
+  color: #6a1b9a;
+  padding: 0.6rem 1rem;
+  border-radius: 20px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+
+.chargeButton:hover {
+  background-color: #e1bee7;
+}

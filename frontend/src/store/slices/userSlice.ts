@@ -13,6 +13,7 @@ interface UserState {
   points: number;
   isKtCustomer: boolean;
   isAuthenticated: boolean;
+  isSubscribed: boolean;
   roles: string[]; // 👈 사용자 역할을 저장할 배열 (예: ['SUBSCRIBER', 'WRITER'])
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   subscribedBookIds: string[];
@@ -45,6 +46,7 @@ const initialState: UserState = {
   points: 1000,
   isKtCustomer: false,
   isAuthenticated: true, 
+  isSubscribed: false,
   roles: ['SUBSCRIBER'], // 👈 역할을 SUBSCRIBER로 설정
   subscribedBookIds: ['best-book-1'], 
   status: 'succeeded',
@@ -96,6 +98,7 @@ const userSlice = createSlice({
       state.points = 0;
       state.isKtCustomer = false;
       state.roles = []; // 로그아웃 시 역할도 초기화합니다.
+      state.isSubscribed = false;
       state.status = 'idle';
     }
   },
@@ -112,6 +115,7 @@ const userSlice = createSlice({
         state.userInfo = action.payload.profile;
         state.points = action.payload.points;
         state.isKtCustomer = action.payload.isKtCustomer;
+        state.isSubscribed = action.payload.isSubscribed || false;
         state.roles = action.payload.roles || []; // API 응답에서 roles를 가져와 저장합니다.
         state.status = 'succeeded';
       })

@@ -17,44 +17,92 @@
   text-decoration: none;
   color: #333;
 }
-.navLink {
-  margin: 0 1rem;
-  text-decoration: none;
-  color: #555;
-}
-.welcome {
-  margin: 0 1rem;
-}
-.logoutButton {
-  padding: 0.5rem 1rem;
-  border: none;
-  background-color: #333;
-  color: white;
-  cursor: pointer;
-  border-radius: 4px;
-}
-.mainContent {
-  flex-grow: 1;
-  padding: 2rem;
-  background-color: #f9f9f9;
-}
-
 .nav {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 1rem; /* 요소들 사이의 간격 */
+}
+
+.navLink {
+  text-decoration: none;
+  color: #555;
+  font-weight: 500;
+  padding: 0.5rem;
+}
+.navLink:hover {
+  color: #6a1b9a;
 }
 
 .subscribeLink {
-  background-color: #f3e5f5;
+  background-color: #6a1b9a;
+  color: white;
+  padding: 0.6rem 1rem;
+  border-radius: 20px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.2s;
+  border: 2px solid transparent;
+}
+.subscribeLink:hover {
+  background-color: #4a148c;
+}
+
+/* 👇 '포인트 충전' 버튼 스타일 추가 */
+.pointShopLink {
+  background-color: white;
   color: #6a1b9a;
   padding: 0.6rem 1rem;
   border-radius: 20px;
   text-decoration: none;
   font-weight: 600;
-  transition: background-color 0.2s;
+  border: 2px solid #6a1b9a;
+  transition: all 0.2s;
+}
+.pointShopLink:hover {
+  background-color: #f3e5f5;
 }
 
-.subscribeLink:hover {
-  background-color: #e1bee7;
+.userMenu {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border-left: 1px solid #eee;
+  padding-left: 1rem;
+  margin-left: 0.5rem;
+}
+
+/* 👇 포인트 표시 스타일 추가 */
+.pointDisplay {
+  font-weight: 600;
+  color: #333;
+  background-color: #f1f3f5;
+  padding: 0.5rem 0.8rem;
+  border-radius: 15px;
+  font-size: 0.9rem;
+}
+
+.welcome {
+  font-weight: 500;
+  white-space: nowrap; /* 이름이 길어도 줄바꿈되지 않도록 */
+}
+
+.logoutButton {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ddd;
+  background-color: #f9f9f9;
+  color: #555;
+  cursor: pointer;
+  border-radius: 20px;
+  transition: background-color 0.2s, color 0.2s;
+  white-space: nowrap;
+}
+.logoutButton:hover {
+  background-color: #eee;
+  color: #333;
+}
+
+.mainContent {
+  flex-grow: 1;
+  padding: 2rem;
+  background-color: #f9f9f9;
 }

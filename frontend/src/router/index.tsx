@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom'
 import { useSelector } from 'react-redux';
 import type { RootState } from '../store/store';
 import MySubscriptionsPage from '../pages/MySubscriptionsPage';
+import PointShopPage from '../pages/PointShopPage'; 
 
 // 페이지 임포트
 import HomePage from '../pages/HomePage';
@@ -26,6 +27,7 @@ const AppRouter = () => {
         { index: true, element: <HomePage /> },
         { path: 'book/:bookId', element: <BookDetailPage /> },
         { path: 'subscribe', element: <SubscriptionPage /> },
+        { path: 'point-shop', element: <PointShopPage /> },
         { path: 'mypage', element: <MyPage /> },
         { path: 'my-subscriptions', element: <MySubscriptionsPage /> },
         { path: 'author-apply', element: <AuthorApplicationPage /> },
