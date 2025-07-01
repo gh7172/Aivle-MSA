@@ -4,11 +4,22 @@ import { useDispatch } from 'react-redux';
 import apiClient from '../api';
 import type { AppDispatch } from '../store/store';
 import { fetchUserProfile } from '../store/slices/userSlice';
+import PaymentModal from '../components/PaymentModal'; // 👈 모달 컴포넌트 임포트
 import styles from './PointShopPage.module.css';
 
+// 타입 정의
+interface PointPackage {
+  id: string;
+  points: number;
+  price: number;
+  bonus: number;
+  color: string;
+  best?: boolean;
+}
+
 // 포인트 상품 목록 정의
-const pointPackages = [
-  { id: 'p1000', points: 1000, price: 1000, bonus: 0, color: '#e0e0e0' },
+const pointPackages: PointPackage[] = [
+  { id: 'p1000', points: 1000, price: 1000, bonus: 0, color: '#90a4ae' },
   { id: 'p5000', points: 5000, price: 5000, bonus: 200, color: '#ce93d8' },
   { id: 'p10000', points: 10000, price: 10000, bonus: 500, color: '#ba68c8' },
   { id: 'p30000', points: 30000, price: 30000, bonus: 2000, color: '#9c27b0', best: true },
@@ -16,63 +27,76 @@ const pointPackages = [
 ];
 
 const PointShopPage: React.FC = () => {
-  const [loadingId, setLoadingId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  // 👇 모달을 제어하기 위해 선택된 상품 상태를 추가합니다.
+  const [selectedPackage, setSelectedPackage] = useState<PointPackage | null>(null);
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
 
-  const handlePurchase = async (packageId: string) => {
-    setLoadingId(packageId);
+  // 이 함수는 모달 안의 최종 '결제하기' 버튼을 눌렀을 때 실행됩니다.
+  const handleConfirmPayment = async () => {
+    if (!selectedPackage) return;
+    setLoading(true);
 
-    // 실제 환경에서는 외부 결제 모듈(PG사) 연동이 필요합니다.
-    // 여기서는 성공했다고 가정하고 API 호출을 시뮬레이션합니다.
     try {
-      if(window.confirm(`${pointPackages.find(p=>p.id === packageId)?.price.toLocaleString()}원을 결제하시겠습니까?`)){
-        // 백엔드에 포인트 구매 요청 API 호출
-        await apiClient.post('/purchase/points', { packageId });
+      // 백엔드에 포인트 구매 요청 API 호출
+      await apiClient.post('/purchase/points', { packageId: selectedPackage.id });
 
-        alert('포인트 충전이 완료되었습니다.');
-        await dispatch(fetchUserProfile()); // 유저 정보(포인트) 갱신
-        navigate('/mypage'); // 마이페이지로 이동하여 충전 결과 확인
-      }
+      alert('포인트 충전이 완료되었습니다.');
+      await dispatch(fetchUserProfile()); // 유저 정보(포인트) 갱신
+      navigate('/mypage');
     } catch (error) {
       alert('결제 처리 중 오류가 발생했습니다.');
     } finally {
-      setLoadingId(null);
+      setLoading(false);
+      setSelectedPackage(null); // 모달 닫기
     }
   };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.header}>
-        <h1 className={styles.title}>포인트 상점</h1>
-        <p className={styles.subtitle}>포인트를 충전하고 '걷다가 서재'의 모든 이야기를 만나보세요.</p>
-      </div>
-      <div className={styles.packageGrid}>
-        {pointPackages.map(pkg => (
-          <div key={pkg.id} className={`${styles.card} ${pkg.best ? styles.best : ''}`}>
-            {pkg.best && <div className={styles.bestBadge}>BEST</div>}
-            <div className={styles.points} style={{ color: pkg.color }}>
-              {pkg.points.toLocaleString()} P
-            </div>
-            {pkg.bonus > 0 && (
-              <div className={styles.bonus}>
-                + {pkg.bonus.toLocaleString()} P 보너스!
+    <>
+      <div className={styles.container}>
+        <div className={styles.header}>
+          <h1 className={styles.title}>포인트 상점</h1>
+          <p className={styles.subtitle}>포인트를 충전하고 '걷다가 서재'의 모든 이야기를 만나보세요.</p>
+        </div>
+        <div className={styles.packageGrid}>
+          {pointPackages.map(pkg => (
+            <div key={pkg.id} className={`${styles.card} ${pkg.best ? styles.best : ''}`}>
+              {pkg.best && <div className={styles.bestBadge}>BEST</div>}
+              <div className={styles.points} style={{ color: pkg.color }}>
+                💎 {pkg.points.toLocaleString()} P
               </div>
-            )}
-            <div className={styles.price}>
-              {pkg.price.toLocaleString()}원
+              {pkg.bonus > 0 && (
+                <div className={styles.bonus}>
+                  + {pkg.bonus.toLocaleString()} P 보너스!
+                </div>
+              )}
+              <div className={styles.price}>
+                {pkg.price.toLocaleString()}원
+              </div>
+              <button
+                className={styles.purchaseButton}
+                // 👇 버튼 클릭 시 바로 결제 로직을 호출하는 대신, 모달을 열도록 상품을 선택합니다.
+                onClick={() => setSelectedPackage(pkg)}
+              >
+                구매하기
+              </button>
             </div>
-            <button
-              className={styles.purchaseButton}
-              onClick={() => handlePurchase(pkg.id)}
-              disabled={loadingId === pkg.id}
-            >
-              {loadingId === pkg.id ? '처리 중...' : '구매하기'}
-            </button>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-    </div>
+
+      {/* 👇 선택된 상품이 있을 때만 결제 모달을 렌더링합니다. */}
+      <PaymentModal
+        isOpen={!!selectedPackage}
+        onClose={() => setSelectedPackage(null)}
+        onConfirm={handleConfirmPayment}
+        productName={`${selectedPackage?.points.toLocaleString()}P 충전`}
+        price={selectedPackage?.price || 0}
+        loading={loading}
+      />
+    </>
   );
 };
 
