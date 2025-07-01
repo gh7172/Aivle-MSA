@@ -1,8 +1,9 @@
 package aivlemsa.domain;
 
-import java.time.LocalDate;
-import java.util.*;
 import lombok.Data;
+
+import javax.persistence.*;
+import java.time.LocalDate;
 
 @Data
 public class RequestBookPublicationCommand {
@@ -10,5 +11,8 @@ public class RequestBookPublicationCommand {
     private Long bookId;
     private Long userId;
     private String title;
-    private String summary;
+    private String text;
+    private LocalDate publishDate;
+    private String state;
+
 }

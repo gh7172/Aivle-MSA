@@ -1,28 +1,32 @@
 package aivlemsa.domain;
 
 import aivlemsa.BooksApplication;
-import aivlemsa.domain.BookAddFailed;
-import aivlemsa.domain.BookAdded;
-import java.util.Date;
+
 import javax.persistence.*;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
+
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "book_table")
 @Data
+@Slf4j
 public class Book {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long bookId;
 
-    private String userId;
+    private Long userId;
 
     private String title;
 
-    private String publishDate;
+    private LocalDate publishDate;
 
-    private String plot;
+    @Lob
+    private String text;
 
     @Column(length = 2000)
     private String summary;
@@ -35,6 +39,7 @@ public class Book {
     @PostPersist
     public void onPostPersist() {
         BookAdded bookAdded = new BookAdded(this);
+        bookAdded.setState("add book succeeded");
         bookAdded.publishAfterCommit();
     }
 
@@ -52,9 +57,23 @@ public class Book {
         Book book = new Book();
         book.setBookId(generationSucceeded.getBookId());
         book.setSummary(generationSucceeded.getSummary());
-        book.setCoverImage(generationSucceeded.getImageUrl());
-        book.setState(generationSucceeded.getState());
-        repository().save(book);
+        book.setCoverImage(generationSucceeded.getCoverImage());
+        book.setState("add Book!");
+        book.setText(generationSucceeded.getText());
+        book.setPublishDate(generationSucceeded.getPublishDate());
+        book.setTitle(generationSucceeded.getTitle());
+        book.setUserId(generationSucceeded.getUserId());
+        try {
+            repository().save(book);
+        } catch (Exception e) {
+            log.error("도서 저장 실패", e);
+            BookAddFailed bookAddFailed = new BookAddFailed();
+            BeanUtils.copyProperties(book, bookAddFailed);
+            bookAddFailed.setState("add book Failed");
+            bookAddFailed.publishAfterCommit();
+        }
+
+
 
         /** Example 2:  finding and process */
         /*

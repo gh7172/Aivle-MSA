@@ -2,10 +2,12 @@ package aivlemsa.domain;
 
 import aivlemsa.WriteApplication;
 
+import java.time.LocalDate;
 import java.util.Date;
 import javax.persistence.*;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import net.minidev.json.annotate.JsonIgnore;
 
 @Entity
 @Table(name = "write_table")
@@ -22,15 +24,16 @@ public class Write {
 
     private String title;
 
-    private Date publishDate;
-
-    private String summary;
+    @Lob
+    private String text;
 
     private String state;
 
+    @JsonIgnore
     @Transient
     private String previousState;
 
+    @JsonIgnore
     @Transient
     private boolean stateChangedByService = false; // 서비스를 통한 상태 변경 여부
 
@@ -58,6 +61,7 @@ public class Write {
                 !this.state.equals(this.previousState)) {
 
             BookPublicationRequested bookPublicationRequested = new BookPublicationRequested(this);
+            bookPublicationRequested.setPublishDate(LocalDate.now());
             bookPublicationRequested.publishAfterCommit();
         }
         // 플래그 리셋

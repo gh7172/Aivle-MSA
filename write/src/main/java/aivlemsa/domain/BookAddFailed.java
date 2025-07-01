@@ -1,6 +1,8 @@
 package aivlemsa.domain;
 
 import aivlemsa.infra.AbstractEvent;
+
+import java.time.LocalDate;
 import java.util.*;
 import lombok.*;
 
@@ -9,10 +11,10 @@ import lombok.*;
 public class BookAddFailed extends AbstractEvent {
 
     private Long bookId;
-    private String userId;
+    private Long userId;
     private String title;
-    private String publishDate;
-    private String plot;
+    private LocalDate publishDate;
+    private String text;
     private String summary;
     private String coverImage;
     private String state;
