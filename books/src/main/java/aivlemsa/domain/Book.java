@@ -3,6 +3,8 @@ package aivlemsa.domain;
 import aivlemsa.BooksApplication;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -16,6 +18,7 @@ import java.time.LocalDate;
 public class Book {
 
     @Id
+    @JsonProperty()
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long bookId;
 
@@ -35,6 +38,8 @@ public class Book {
     private String coverImage;
 
     private String state;
+
+    private int viewCount;
 
     @PostPersist
     public void onPostPersist() {

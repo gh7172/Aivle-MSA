@@ -5,6 +5,8 @@ import aivlemsa.WriteApplication;
 import java.time.LocalDate;
 import java.util.Date;
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.annotate.JsonIgnore;
@@ -17,6 +19,7 @@ import net.minidev.json.annotate.JsonIgnore;
 public class Write {
 
     @Id
+    @JsonProperty()
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long bookId;
 
