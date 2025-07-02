@@ -1,4 +1,4 @@
-name: Deploy to Azure AKS using Manifests
+name: Deploy to Azure AKS
 
 on:
   push:
@@ -47,10 +47,7 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Build Maven Project for ${{ matrix.service }}
-        if: matrix.service != 'frontend'
-        run: |
-          echo "Building ${{ matrix.service }} service..."
-          mvn clean package -f ./${{ matrix.service }}/pom.xml -DskipTests
+        run: mvn clean package -f ./${{ matrix.service }}/pom.xml -DskipTests
 
       - name: Build and push ${{ matrix.service }} to ACR
         run: |
@@ -60,8 +57,6 @@ jobs:
             --registry ${{ env.AZURE_CONTAINER_REGISTRY }} \
             --resource-group ${{ env.RESOURCE_GROUP }} \
             ./${{ matrix.service }}
-
-
 
   deploy-infrastructure:
     permissions:
@@ -91,104 +86,62 @@ jobs:
           admin: 'false'
           use-kubelogin: 'true'
 
-      - name: Create Infrastructure Manifests
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: 'latest'
+
+      - name: Add Bitnami Helm Repository
+        run: |
+          helm repo add bitnami https://charts.bitnami.com/bitnami
+          helm repo update
+
+      - name: Create Kafka Values File
         run: |
           mkdir -p infrastructure/kafka
-          cat > infrastructure/kafka/deployment.yaml << 'EOF'
-          apiVersion: apps/v1
-          kind: Deployment
-          metadata:
-            name: zookeeper
-            labels:
-              app: zookeeper
-          spec:
-            replicas: 1
-            selector:
-              matchLabels:
-                app: zookeeper
-            template:
-              metadata:
-                labels:
-                  app: zookeeper
-              spec:
-                containers:
-                - name: zookeeper
-                  image: confluentinc/cp-zookeeper:7.3.3
-                  ports:
-                  - containerPort: 2181
-                  env:
-                  - name: ZOOKEEPER_CLIENT_PORT
-                    value: "2181"
-                  - name: ZOOKEEPER_TICK_TIME
-                    value: "2000"
-          ---
-          apiVersion: v1
-          kind: Service
-          metadata:
-            name: zookeeper
-            labels:
-              app: zookeeper
-          spec:
-            ports:
-            - port: 2181
-              targetPort: 2181
-            selector:
-              app: zookeeper
-          ---
-          apiVersion: apps/v1
-          kind: Deployment
-          metadata:
-            name: my-kafka
-            labels:
-              app: my-kafka
-          spec:
-            replicas: 1
-            selector:
-              matchLabels:
-                app: my-kafka
-            template:
-              metadata:
-                labels:
-                  app: my-kafka
-              spec:
-                containers:
-                - name: my-kafka
-                  image: confluentinc/cp-kafka:7.3.3
-                  ports:
-                  - containerPort: 9092
-                  env:
-                  - name: KAFKA_BROKER_ID
-                    value: "1"
-                  - name: KAFKA_ZOOKEEPER_CONNECT
-                    value: "zookeeper:2181"
-                  - name: KAFKA_ADVERTISED_LISTENERS
-                    value: "PLAINTEXT://my-kafka:9092"
-                  - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
-                    value: "PLAINTEXT:PLAINTEXT"
-                  - name: KAFKA_INTER_BROKER_LISTENER_NAME
-                    value: "PLAINTEXT"
-                  - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
-                    value: "1"
-                  - name: KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR
-                    value: "1"
-          ---
-          apiVersion: v1
-          kind: Service
-          metadata:
-            name: my-kafka
-            labels:
-              app: my-kafka
-          spec:
-            ports:
-            - port: 9092
-              targetPort: 9092
-            selector:
-              app: my-kafka
+          cat > infrastructure/kafka/values.yaml << 'EOF'
+          kafka:
+            replicaCount: 1
+            advertisedListeners:
+              - PLAINTEXT://my-kafka:9092
+            service:
+              type: ClusterIP
+              ports:
+                client: 9092
+          
+          zookeeper:
+            replicaCount: 1
+            service:
+              type: ClusterIP
+              ports:
+                client: 2181
+          
+          externalZookeeper:
+            servers: []
+          
+          resources:
+            limits:
+              cpu: 500m
+              memory: 1Gi
+            requests:
+              cpu: 250m
+              memory: 512Mi
+          
+          persistence:
+            enabled: false
+          
+          fullnameOverride: "my-kafka"
+          nameOverride: "my-kafka"
           EOF
 
-      - name: Deploy Infrastructure
+      - name: Install Kafka with Helm (if not exists)
         run: |
-          kubectl apply -f infrastructure/kafka/deployment.yaml
+          if ! helm list -q | grep -q "^my-kafka$"; then
+            echo "Kafka not found. Installing..."
+            helm install my-kafka bitnami/kafka --values infrastructure/kafka/values.yaml --wait --timeout=10m
+          else
+            echo "Kafka already exists. Skipping installation."
+          fi
 
   deploy-services:
     permissions:
@@ -226,58 +179,11 @@ jobs:
           admin: 'false'
           use-kubelogin: 'true'
 
-      - name: Update image in ${{ matrix.service }} deployment manifest
-        run: |
-          if [ -f "${{ matrix.service }}/kubernetes/deployment.yaml" ]; then
-            # 이미지 태그를 현재 commit SHA로 업데이트
-            sed -i 's|:latest|:${{ github.sha }}|g' ${{ matrix.service }}/kubernetes/deployment.yaml
-            
-            echo "Updated manifest:"
-            cat ${{ matrix.service }}/kubernetes/deployment.yaml
-          fi
+      - name: Update image tag in deployment manifest
+        run: sed -i 's|:latest|:${{ github.sha }}|g' ${{ matrix.service }}/kubernetes/deployment.yaml
 
-      - name: Deploy ${{ matrix.service }} using manifests
+      - name: Deploy ${{ matrix.service }} service
         run: |
           kubectl apply -f ${{ matrix.service }}/kubernetes/deployment.yaml
           kubectl apply -f ${{ matrix.service }}/kubernetes/service.yaml
-
-      - name: Wait for ${{ matrix.service }} deployment
-        run: |
-          kubectl rollout status deployment/${{ matrix.service }} --timeout=300s
-
-  get-service-info:
-    permissions:
-      contents: read
-    runs-on: ubuntu-latest
-    needs: [deploy-services]
-    
-    steps:
-      - name: Azure login
-        uses: azure/login@v1.4.6
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      - name: Set up kubelogin for non-interactive login
-        uses: azure/use-kubelogin@v1
-        with:
-          kubelogin-version: 'v0.0.25'
-
-      - name: Get K8s context
-        uses: azure/aks-set-context@v3
-        with:
-          resource-group: ${{ env.RESOURCE_GROUP }}
-          cluster-name: ${{ env.CLUSTER_NAME }}
-          admin: 'false'
-          use-kubelogin: 'true'
-
-      - name: Get service information
-        run: |
-          echo "🚀 Deployment completed! Service information:"
-          echo "=============================================="
-          kubectl get all -o wide
-          echo ""
-          echo "Services:"
-          kubectl get services
-          echo ""
-          echo "LoadBalancer Services:"
-          kubectl get services --field-selector spec.type=LoadBalancer 
+          kubectl rollout status deployment/${{ matrix.service }} --timeout=300s 
