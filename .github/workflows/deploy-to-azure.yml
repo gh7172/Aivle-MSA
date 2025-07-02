@@ -138,21 +138,21 @@ jobs:
           apiVersion: apps/v1
           kind: Deployment
           metadata:
-            name: kafka
+            name: my-kafka
             labels:
-              app: kafka
+              app: my-kafka
           spec:
             replicas: 1
             selector:
               matchLabels:
-                app: kafka
+                app: my-kafka
             template:
               metadata:
                 labels:
-                  app: kafka
+                  app: my-kafka
               spec:
                 containers:
-                - name: kafka
+                - name: my-kafka
                   image: confluentinc/cp-kafka:7.3.3
                   ports:
                   - containerPort: 9092
@@ -162,7 +162,7 @@ jobs:
                   - name: KAFKA_ZOOKEEPER_CONNECT
                     value: "zookeeper:2181"
                   - name: KAFKA_ADVERTISED_LISTENERS
-                    value: "PLAINTEXT://kafka:9092"
+                    value: "PLAINTEXT://my-kafka:9092"
                   - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
                     value: "PLAINTEXT:PLAINTEXT"
                   - name: KAFKA_INTER_BROKER_LISTENER_NAME
@@ -175,15 +175,15 @@ jobs:
           apiVersion: v1
           kind: Service
           metadata:
-            name: kafka
+            name: my-kafka
             labels:
-              app: kafka
+              app: my-kafka
           spec:
             ports:
             - port: 9092
               targetPort: 9092
             selector:
-              app: kafka
+              app: my-kafka
           EOF
 
       - name: Deploy Infrastructure
@@ -276,8 +276,8 @@ jobs:
           echo "=============================================="
           kubectl get all -o wide
           echo ""
-          echo "📋 Services:"
+          echo "Services:"
           kubectl get services
           echo ""
-          echo "🌐 LoadBalancer Services:"
+          echo "LoadBalancer Services:"
           kubectl get services --field-selector spec.type=LoadBalancer 
