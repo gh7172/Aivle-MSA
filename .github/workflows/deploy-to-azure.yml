@@ -21,7 +21,7 @@ jobs:
         service: [
           "author", "books", "gateway", "generation", 
           "point", "purchase", "read", "subscription", 
-          "user", "write", "frontend"
+          "user", "write"
         ]
     
     steps:
