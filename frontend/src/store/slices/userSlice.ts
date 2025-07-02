@@ -52,25 +52,27 @@ export const fetchUserProfile = createAsyncThunk('user/fetchProfile', async (_, 
 //   status: 'succeeded',
 // };
 
-const initialState: UserState = {
-  userInfo: { id: 'new-user', name: '신규가입자' },
-  points: 1000,
-  isKtCustomer: false,
-  isAuthenticated: true, 
-  subscribedBookIds: [], // 👈 이 부분을 빈 배열로 수정
-  isSubscribed: false,
-  roles: ['SUBSCRIBER'],
-  status: 'succeeded',
-};
-
 // const initialState: UserState = {
-//   userInfo: { id: 'writer-user', name: '김작가' },
-//   points: 5000,
-//   isKtCustomer: true,
+//   userInfo: { id: 'new-user', name: '신규가입자' },
+//   points: 1000,
+//   isKtCustomer: false,
 //   isAuthenticated: true, 
-//   roles: ['SUBSCRIBER', 'WRITER'], // 👈 여기에 'WRITER' 역할을 추가합니다.
+//   subscribedBookIds: [], // 👈 이 부분을 빈 배열로 수정
+//   isSubscribed: false,
+//   roles: ['SUBSCRIBER'],
 //   status: 'succeeded',
 // };
+
+const initialState: UserState = {
+  userInfo: { id: 'writer-user', name: '김작가' },
+  points: 5000,
+  isKtCustomer: true,
+  isAuthenticated: true, 
+  isSubscribed: true,
+  roles: ['SUBSCRIBER', 'WRITER'], // 👈 여기에 'WRITER' 역할을 추가합니다.
+  subscribedBookIds: ['best-book-1'],
+  status: 'succeeded',
+};
 
 // --- 초기 상태 ---
 // 실제 운영 환경에서 사용될 초기 상태입니다.
