@@ -6,64 +6,101 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_CONTAINER_REGISTRY: "project09"          
-  RESOURCE_GROUP: "project09-rsrcgrp"        
-  CLUSTER_NAME: "project09-aks"                
-  
+  AZURE_CONTAINER_REGISTRY: "project09"
+  RESOURCE_GROUP: "project09-rsrcgrp"
+  CLUSTER_NAME: "project09-aks"
+
 jobs:
   build-and-push:
     permissions:
       contents: read
     runs-on: ubuntu-latest
-    
+
     strategy:
       matrix:
-        service: [
-          "author", "books", "gateway", "generation", 
-          "point", "purchase", "read", "subscription", 
-          "user", "write"
-        ]
-    
+        include:
+          - service: author
+            type: backend
+          - service: books
+            type: backend
+          - service: gateway
+            type: backend
+          - service: generation
+            type: backend
+          - service: point
+            type: backend
+          - service: purchase
+            type: backend
+          - service: read
+            type: backend
+          - service: subscription
+            type: backend
+          - service: user
+            type: backend
+          - service: write
+            type: backend
+          - service: frontend
+            type: frontend
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Set up JDK 11
-        uses: actions/setup-java@v3
-        with:
-          java-version: '11'
-          distribution: 'temurin'
-
-      - name: Cache Maven dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
 
       - name: Azure login
         uses: azure/login@v1.4.6
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Build Maven Project for ${{ matrix.service }}
-        run: mvn clean package -f ./${{ matrix.service }}/pom.xml -DskipTests
+      - name: Set up JDK 11
+        if: matrix.type == 'backend'
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+
+      - name: Cache Maven dependencies
+        if: matrix.type == 'backend'
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Build Project (${{ matrix.service }})
+        run: |
+          if [ "${{ matrix.type }}" = "backend" ]; then
+            mvn clean package -f ./${{ matrix.service }}/pom.xml -DskipTests
+          else
+            cd frontend
+            npm ci
+            npm run build
+          fi
 
       - name: Build and push ${{ matrix.service }} to ACR
         run: |
-          az acr build \
-            --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/aivle-msa/${{ matrix.service }}:${{ github.sha }} \
-            --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/aivle-msa/${{ matrix.service }}:latest \
-            --registry ${{ env.AZURE_CONTAINER_REGISTRY }} \
-            --resource-group ${{ env.RESOURCE_GROUP }} \
-            ./${{ matrix.service }}
+          if [ "${{ matrix.type }}" = "backend" ]; then
+            az acr build \
+              --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/aivle-msa/${{ matrix.service }}:${{ github.sha }} \
+              --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/aivle-msa/${{ matrix.service }}:latest \
+              --registry ${{ env.AZURE_CONTAINER_REGISTRY }} \
+              --resource-group ${{ env.RESOURCE_GROUP }} \
+              ./${{ matrix.service }}
+          else
+            az acr build \
+              --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/aivle-msa/frontend:${{ github.sha }} \
+              --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/aivle-msa/frontend:latest \
+              --registry ${{ env.AZURE_CONTAINER_REGISTRY }} \
+              --resource-group ${{ env.RESOURCE_GROUP }} \
+              ./frontend
+          fi
+
 
   deploy-infrastructure:
     permissions:
       contents: read
     runs-on: ubuntu-latest
     needs: [build-and-push]
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -96,13 +133,48 @@ jobs:
           helm repo add bitnami https://charts.bitnami.com/bitnami
           helm repo update
 
+      - name: Create Kafka Values File
+        run: |
+          mkdir -p infrastructure/kafka
+          cat > infrastructure/kafka/values.yaml << 'EOF'
+          kafka:
+            replicaCount: 1
+            advertisedListeners:
+              - PLAINTEXT://my-kafka:9092
+            service:
+              type: ClusterIP
+              ports:
+                client: 9092
+
+          zookeeper:
+            replicaCount: 1
+            service:
+              type: ClusterIP
+              ports:
+                client: 2181
+
+          externalZookeeper:
+            servers: []
+
+          resources:
+            limits:
+              cpu: 500m
+              memory: 1Gi
+            requests:
+              cpu: 250m
+              memory: 512Mi
+
+          persistence:
+            enabled: false
+
+          fullnameOverride: "my-kafka"
+          nameOverride: "my-kafka"
+          EOF
+
       - name: Install Kafka with Helm (if not exists)
         run: |
           if ! helm list -q | grep -q "^my-kafka$"; then
-            echo "Kafka not found. Installing..."
-            helm install my-kafka bitnami/kafka --version 23.0.5 --wait --timeout=10m
-          else
-            echo "Kafka already exists. Skipping installation."
+            helm install my-kafka bitnami/kafka --values infrastructure/kafka/values.yaml --wait --timeout=10m
           fi
 
   deploy-services:
@@ -110,15 +182,33 @@ jobs:
       contents: read
     runs-on: ubuntu-latest
     needs: [deploy-infrastructure]
-    
+
     strategy:
       matrix:
-        service: [
-          "author", "books", "gateway", "generation", 
-          "point", "purchase", "read", "subscription", 
-          "user", "write"
-        ]
-    
+        include:
+          - service: author
+            type: backend
+          - service: books
+            type: backend
+          - service: gateway
+            type: backend
+          - service: generation
+            type: backend
+          - service: point
+            type: backend
+          - service: purchase
+            type: backend
+          - service: read
+            type: backend
+          - service: subscription
+            type: backend
+          - service: user
+            type: backend
+          - service: write
+            type: backend
+          - service: frontend
+            type: frontend
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -142,10 +232,15 @@ jobs:
           use-kubelogin: 'true'
 
       - name: Update image tag in deployment manifest
-        run: sed -i 's|:latest|:${{ github.sha }}|g' ${{ matrix.service }}/kubernetes/deployment.yaml
-
-      - name: Deploy ${{ matrix.service }} service
         run: |
-          kubectl apply -f ${{ matrix.service }}/kubernetes/deployment.yaml
-          kubectl apply -f ${{ matrix.service }}/kubernetes/service.yaml
-          kubectl rollout status deployment/${{ matrix.service }} --timeout=300s 
+          if [ "${{ matrix.type }}" = "backend" ]; then
+            sed -i 's|:latest|:${{ github.sha }}|g' ${{ matrix.service }}/kubernetes/deployment.yaml
+            kubectl apply -f ${{ matrix.service }}/kubernetes/deployment.yaml
+            kubectl apply -f ${{ matrix.service }}/kubernetes/service.yaml
+            kubectl rollout status deployment/${{ matrix.service }} --timeout=300s
+          else
+            sed -i 's|:latest|:${{ github.sha }}|g' frontend/kubernetes/deployment.yaml
+            kubectl apply -f frontend/kubernetes/deployment.yaml
+            kubectl apply -f frontend/kubernetes/service.yaml
+            kubectl rollout status deployment/frontend --timeout=300s
+          fi
