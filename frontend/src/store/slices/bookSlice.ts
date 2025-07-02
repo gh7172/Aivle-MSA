@@ -16,11 +16,12 @@ interface BookState {
   books: Book[];
   bestsellers: Book[];
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
+  error: string | null;
 }
 
 export const fetchBooks = createAsyncThunk('books/fetchBooks', async () => {
   const response = await apiClient.get('/books');
-  return response.data;
+  return response.data as Book[]; // 받아오는 데이터 타입을 명시해주는 것이 좋습니다.
 });
 
 const initialState: BookState = {
@@ -48,7 +49,8 @@ const initialState: BookState = {
       requiredPoints: 500,
     }
   ],
-  status: 'succeeded',
+  status: 'idle', // 초기 상태는 'idle'
+  error: null,
 };
 
 const bookSlice = createSlice({
@@ -56,7 +58,22 @@ const bookSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    // ... 기존 extraReducers 로직 ...
+    builder
+      // API 요청이 시작되었을 때
+      .addCase(fetchBooks.pending, (state) => {
+        state.status = 'loading';
+      })
+      // API 요청이 성공적으로 끝났을 때
+      .addCase(fetchBooks.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        // API로부터 받아온 책 목록으로 state를 업데이트
+        state.books = action.payload;
+      })
+      // API 요청이 실패했을 때
+      .addCase(fetchBooks.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message || 'Something went wrong';
+      });
   },
 });
 
