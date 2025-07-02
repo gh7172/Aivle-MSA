@@ -6,7 +6,7 @@ COPY package*.json ./
 RUN npm install
 
 COPY . .
-RUN npm run build || echo "Build completed with warnings"
+RUN npm run build
 
 # Runtime stage
 FROM nginx:alpine
