@@ -14,11 +14,11 @@ spec:
       labels:
         app: frontend
     spec:
-      containers:
-        - name: frontend
-          image: "project09.azurecr.io/frontend:250702"
-          ports:
-            - containerPort: 8080
+            containers:
+      - name: frontend
+        image: project09.azurecr.io/aivle-msa/frontend:latest
+        ports:
+        - containerPort: 80
           
           readinessProbe:
             httpGet:
