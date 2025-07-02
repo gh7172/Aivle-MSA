@@ -21,7 +21,7 @@ jobs:
         service: [
           "author", "books", "gateway", "generation", 
           "point", "purchase", "read", "subscription", 
-          "user", "write"
+          "user", "write", "frontend"
         ]
     
     steps:
@@ -153,9 +153,9 @@ jobs:
     strategy:
       matrix:
         service: [
-          "gateway", "author", "books", "generation", 
+          "author", "books", "gateway", "generation", 
           "point", "purchase", "read", "subscription", 
-          "user", "usercenter", "write", "frontend"
+          "user", "write", "frontend"
         ]
     
     steps:
