@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: purchase
-          image: "username/purchase:latest"
+          image: "project09.azurecr.io/aivle-msa/purchase:latest"
           ports:
             - containerPort: 8080
           readinessProbe:

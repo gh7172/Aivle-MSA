@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: usercenter
-          image: "username/usercenter:latest"
+          image: "project09.azurecr.io/aivle-msa/usercenter:latest"
           ports:
             - containerPort: 8080
           readinessProbe:

@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: publish
-          image: "username/publish:latest"
+          image: "project09.azurecr.io/aivle-msa/write:latest"
           ports:
             - containerPort: 8080
           readinessProbe:
