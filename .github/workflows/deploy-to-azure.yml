@@ -94,6 +94,7 @@ jobs:
               ./frontend
           fi
 
+
   deploy-infrastructure:
     permissions:
       contents: read
