@@ -96,49 +96,11 @@ jobs:
           helm repo add bitnami https://charts.bitnami.com/bitnami
           helm repo update
 
-      - name: Create Kafka Values File
-        run: |
-          mkdir -p infrastructure/kafka
-          cat > infrastructure/kafka/values.yaml << 'EOF'
-          kafka:
-            replicaCount: 1
-            advertisedListeners:
-              - PLAINTEXT://my-kafka:9092
-            service:
-              type: ClusterIP
-              ports:
-                client: 9092
-          
-          zookeeper:
-            replicaCount: 1
-            service:
-              type: ClusterIP
-              ports:
-                client: 2181
-          
-          externalZookeeper:
-            servers: []
-          
-          resources:
-            limits:
-              cpu: 500m
-              memory: 1Gi
-            requests:
-              cpu: 250m
-              memory: 512Mi
-          
-          persistence:
-            enabled: false
-          
-          fullnameOverride: "my-kafka"
-          nameOverride: "my-kafka"
-          EOF
-
       - name: Install Kafka with Helm (if not exists)
         run: |
           if ! helm list -q | grep -q "^my-kafka$"; then
             echo "Kafka not found. Installing..."
-            helm install my-kafka bitnami/kafka --values infrastructure/kafka/values.yaml --wait --timeout=10m
+            helm install my-kafka bitnami/kafka --version 23.0.5 --wait --timeout=10m
           else
             echo "Kafka already exists. Skipping installation."
           fi
