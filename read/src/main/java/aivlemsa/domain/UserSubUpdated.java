@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @ToString
 public class UserSubUpdated extends AbstractEvent {
 
-    private String timestamp;
+    private Long timestamp;
     private Long userId;
     private LocalDateTime subscriptionExpiryDate;
 } 

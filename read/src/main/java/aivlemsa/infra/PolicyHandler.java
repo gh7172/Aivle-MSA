@@ -20,9 +20,6 @@ import java.util.*;
 public class PolicyHandler {
 
     @Autowired
-    Repository Repository;
-
-    @Autowired
     UserLibraryRepository userLibraryRepository;
 
     @Autowired
