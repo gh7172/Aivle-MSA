@@ -131,8 +131,10 @@ jobs:
 
       - name: Install Kafka with Helm (if not exists)
         run: |
-          if ! helm list -q | grep -q "^my-kafka$"; then
-            helm install my-kafka bitnami/kafka --values infrastructure/kafka/values.yaml --wait --timeout=10m
+          KAFKA_RUNNING=$(kubectl get pods | grep "my-kafka.*Running" | wc -l || echo "0")
+          if [ "$KAFKA_RUNNING" -eq 0 ]; then
+            helm uninstall my-kafka || true
+            helm install my-kafka bitnami/kafka --version 23.0.5 --wait --timeout=10m
           fi
 
   deploy-services:
