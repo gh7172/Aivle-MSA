@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: read
-          image: "username/read:latest"
+          image: "project09.azurecr.io/aivle-msa/read:latest"
           ports:
             - containerPort: 8080
           readinessProbe:
