@@ -23,12 +23,22 @@ const SignupPage: React.FC = () => {
     setError('');
 
     try {
-      // 👇 백엔드로 isKtCustomer 값을 함께 전송
-      await apiClient.post('/user/register', { name, email, password, isKtCustomer });
+      // 👇 백엔드 API 명세에 맞게 주소와 전송 데이터를 수정
+      await apiClient.post('/users', { 
+        loginId: email, // 'email'을 'loginId'로 변경
+        password: password,
+        name: name,
+        isAuthor: false, // 기본값으로 isAuthor 설정
+        isKtCustomer: isKtCustomer 
+      });
       alert('회원가입이 완료되었습니다. 로그인 페이지로 이동합니다.');
       navigate('/login');
     } catch (err: any) {
-      // ... (기존 에러 처리 로직)
+      if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError('회원가입 중 오류가 발생했습니다. 입력 정보를 확인하고 다시 시도해 주세요.');
+      }
     } finally {
       setLoading(false);
     }

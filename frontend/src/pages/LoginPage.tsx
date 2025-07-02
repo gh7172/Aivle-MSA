@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom'; // Link 컴포넌트 추가
+import { Link, useNavigate } from 'react-router-dom'; // useNavigate 추가
 import { login, fetchUserProfile } from '../store/slices/userSlice';
 import type { AppDispatch } from '../store/store';
 import styles from './LoginPage.module.css'; // CSS 모듈 임포트
@@ -9,19 +9,20 @@ const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(''); // 에러 메시지 상태 추가
+  const [error, setError] = useState('');
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate(); // useNavigate 훅 사용
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError(''); // 요청 시작 시 에러 메시지 초기화
+    setError('');
     try {
       await dispatch(login({ email, password })).unwrap();
       await dispatch(fetchUserProfile());
-      // 성공 시 라우터가 자동으로 홈으로 이동시킴
-    } catch (err) {
-      setError('이메일 또는 비밀번호가 올바르지 않습니다.'); // 실패 시 에러 메시지 설정
+      navigate('/'); // 로그인 성공 시 홈으로 이동
+    } catch (err: any) {
+      setError(err.message || '이메일 또는 비밀번호가 올바르지 않습니다.');
       setLoading(false);
     }
   };

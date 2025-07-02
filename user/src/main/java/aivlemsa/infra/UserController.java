@@ -34,7 +34,9 @@ public class UserController {
         User user = new User();
         user.setLoginId(request.getLoginId());
         user.setPassword(request.getPassword());
+        user.setName(request.getName()); // 이름 설정 추가
         user.setIsAuthor(request.getIsAuthor());
+        user.setIsKtCustomer(request.getIsKtCustomer()); // KT 고객 여부 설정 추가
         return ResponseEntity.ok(userRepository.save(user));
     }
 
