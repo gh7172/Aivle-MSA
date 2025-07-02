@@ -1,6 +1,5 @@
-# Runtime stage
 FROM openjdk:15-jdk-alpine
-COPY --from=build /app/target/*SNAPSHOT.jar app.jar
+COPY target/*SNAPSHOT.jar app.jar
 EXPOSE 8080
 ENV TZ=Asia/Seoul
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
