@@ -66,15 +66,9 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      - name: Build Project (${{ matrix.service }})
-        run: |
-          if [ "${{ matrix.type }}" = "backend" ]; then
-            mvn clean package -f ./${{ matrix.service }}/pom.xml -DskipTests
-          else
-            cd frontend
-            npm ci
-            npm run build
-          fi
+      - name: Build Maven Project for ${{ matrix.service }}
+        if: matrix.type == 'backend'
+        run: mvn clean package -f ./${{ matrix.service }}/pom.xml -DskipTests
 
       - name: Build and push ${{ matrix.service }} to ACR
         run: |
