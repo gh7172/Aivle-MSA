@@ -3,6 +3,7 @@ FROM node:16.18-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
+RUN npm install @rollup/rollup-linux-x64-gnu --save-optional || true
 COPY . .
 RUN npm run build
 
