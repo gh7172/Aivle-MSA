@@ -27,7 +27,11 @@ public class User {
 
     private String password;
 
+    private String name;
+
     private Boolean isAuthor;
+
+    private Boolean isKtCustomer;
 
     @PostPersist
     public void onPostPersist() {
@@ -92,6 +96,22 @@ public class User {
     }
     public void setIsAuthor(Boolean isAuthor) {
         this.isAuthor = isAuthor;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Boolean getIsKtCustomer() {
+        return this.isKtCustomer;
+    }
+
+    public void setIsKtCustomer(Boolean isKtCustomer) {
+        this.isKtCustomer = isKtCustomer;
     }
 
 }
