@@ -92,7 +92,7 @@ spring:
         - id: user
           uri: http://user:8080
           predicates:
-            - Path=/users/**, 
+            - Path=/users, /users/**
         - id: point
           uri: http://point:8080
           predicates:
