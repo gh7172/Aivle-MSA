@@ -24,7 +24,7 @@ export const login = createAsyncThunk(
   "user/login",
   async (credentials: any, { rejectWithValue }) => {
     try {
-      const response = await apiClient.post("/user/login", credentials);
+      const response = await apiClient.post("/login", credentials);
       // 로그인 성공 시 토큰을 localStorage에 저장합니다.
       localStorage.setItem("accessToken", response.data.token);
       return response.data.user;
