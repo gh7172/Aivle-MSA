@@ -1,5 +1,5 @@
 server:
-  port: 8088
+  port: 8080
 
 ---
 
@@ -34,7 +34,7 @@ spring:
         - id: user-signup
           uri: http://localhost:8086
           predicates:
-            - Path=/users/**
+            - Path=/users, /users/**, /login
         - id: point
           uri: http://localhost:8087
           predicates:
@@ -98,7 +98,7 @@ spring:
         - id: user
           uri: http://user:8080
           predicates:
-            - Path=/user/**, /users/**
+            - Path=/user/**, /users, /users/**, /login
         - id: point
           uri: http://point:8080
           predicates:
@@ -133,6 +133,3 @@ spring:
             allowedHeaders:
               - "*"
             allowCredentials: true
-
-server:
-  port: 8080
