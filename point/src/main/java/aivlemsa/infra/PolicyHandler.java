@@ -28,12 +28,21 @@ public class PolicyHandler {
         condition = "headers['type']=='SignedUp'"
     )
     public void wheneverSignedUp_HandleSignedUp(@Payload SignedUp signedUp) {
-        SignedUp event = signedUp;
         System.out.println(
             "\n\n##### listener HandleSignedUp : " + signedUp + "\n\n"
         );
-        // Sample Logic //
 
+        // Sample Logic //
+        Point point = new Point();
+        point.setUserId(signedUp.getId());
+
+        int totalPoints = 1000; // 기본 1000포인트
+        if (signedUp.getIsKtCustomer() != null && signedUp.getIsKtCustomer()) {
+            totalPoints += 4000; // KT 고객이면 4000포인트 추가
+        }
+        point.setPoints(totalPoints);
+
+        pointRepository.save(point);
     }
 }
 //>>> Clean Arch / Inbound Adaptor

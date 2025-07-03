@@ -18,7 +18,8 @@ const LoginPage: React.FC = () => {
     setLoading(true);
     setError('');
     try {
-      await dispatch(login({ email, password })).unwrap();
+      // email을 loginId로 변경하여 전달
+      await dispatch(login({ loginId: email, password })).unwrap();
       await dispatch(fetchUserProfile());
       navigate('/'); // 로그인 성공 시 홈으로 이동
     } catch (err: any) {
