@@ -40,7 +40,7 @@ const MainLayout: React.FC = () => {
                         
                         {/* 👇 현재 보유 포인트를 헤더에 표시합니다. */}
                         <div className={styles.pointDisplay}>
-                          💎 {points.toLocaleString()} P
+                          💎 {typeof points === 'number' ? points.toLocaleString() : '0'} P
                         </div>
 
                         <span className={styles.welcome}>{user?.name}님</span>

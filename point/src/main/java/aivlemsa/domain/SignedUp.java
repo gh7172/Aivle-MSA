@@ -10,4 +10,5 @@ import lombok.*;
 public class SignedUp extends AbstractEvent {
 
     private Long id;
+    private Boolean isKtCustomer;
 }

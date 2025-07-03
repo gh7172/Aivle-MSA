@@ -25,10 +25,16 @@ spring:
           uri: http://localhost:8085
           predicates:
             - Path=/subscribes/**, /getSubscribes/**
-        - id: user
+        - id: user-login
           uri: http://localhost:8086
           predicates:
-            - Path=/users/**, 
+            - Path=/user/**
+          filters:
+            - StripPrefix=1
+        - id: user-signup
+          uri: http://localhost:8086
+          predicates:
+            - Path=/users/**
         - id: point
           uri: http://localhost:8087
           predicates:
@@ -92,7 +98,7 @@ spring:
         - id: user
           uri: http://user:8080
           predicates:
-            - Path=/users/**, 
+            - Path=/user/**, /users/**
         - id: point
           uri: http://point:8080
           predicates:
