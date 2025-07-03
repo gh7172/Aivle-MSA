@@ -64,10 +64,6 @@ logging:
     org.hibernate.type: trace
     org.springframework.cloud: debug
 
-
-server:
-  port: 8084
-
 ---
 
 spring:
@@ -112,5 +108,14 @@ spring:
         event-out:
           destination: aivlemsa
           contentType: application/json
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
 
 

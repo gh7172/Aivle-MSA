@@ -14,27 +14,8 @@ spec:
       labels:
         app: frontend
     spec:
-            containers:
+      containers:
       - name: frontend
         image: project09.azurecr.io/aivle-msa/frontend:latest
         ports:
-        - containerPort: 80
-          
-          readinessProbe:
-            httpGet:
-              path: /
-              port: 80
-            initialDelaySeconds: 10 
-            periodSeconds: 5      
-            timeoutSeconds: 2
-            failureThreshold: 3
-          
-          livenessProbe:
-            httpGet:
-              path: /
-              port: 80
-            initialDelaySeconds: 30 
-            periodSeconds: 10    
-            timeoutSeconds: 2
-            failureThreshold: 3
-            
+        - containerPort: 8080

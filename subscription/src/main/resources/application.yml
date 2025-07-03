@@ -49,10 +49,6 @@ api:
   url: 
     point: localhost:8087 
     
-
-server:
-  port: 8085
-
 ---
 
 spring:
@@ -88,5 +84,14 @@ spring:
 api:
   url: 
     point: point:8080 
+    
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always 
     
 

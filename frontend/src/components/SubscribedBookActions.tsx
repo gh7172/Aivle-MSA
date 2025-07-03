@@ -1,5 +1,4 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import apiClient from '../api';
 import styles from './SubscribedBookActions.module.css';
 
@@ -9,8 +8,6 @@ interface Props {
 }
 
 const SubscribedBookActions: React.FC<Props> = ({ bookId, bookTitle }) => {
-  const navigate = useNavigate();
-
   const handleRead = () => {
     // 실제 뷰어 페이지가 있다면 해당 경로로 이동합니다.
     alert(`'${bookTitle}' 책을 열람합니다.`);

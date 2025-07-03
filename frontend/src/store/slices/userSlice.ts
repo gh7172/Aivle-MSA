@@ -68,28 +68,25 @@ export const fetchUserProfile = createAsyncThunk(
 //   roles: ['SUBSCRIBER'],
 //   status: 'succeeded',
 // };
-
-const initialState: UserState = {
-  userInfo: { id: 123, name: "김작가" },
-  points: 10000,
-  isKtCustomer: true,
-  isAuthenticated: true,
-  isSubscribed: false,
-  roles: ["SUBSCRIBER", "WRITER"], // 👈 여기에 'WRITER' 역할을 추가합니다.
-  subscribedBookIds: ["best-book-1"],
-  status: "succeeded",
-};
-
-// --- 초기 상태 ---
-// 실제 운영 환경에서 사용될 초기 상태입니다.
 // const initialState: UserState = {
-//   userInfo: null,
-//   points: 0,
-//   isKtCustomer: false,
-//   // 페이지 로드 시 토큰 존재 여부로 로그인 상태를 결정합니다.
-//   isAuthenticated: !!localStorage.getItem('accessToken'),
-//   roles: [],
-//   status: 'idle',
+//   userInfo: { id: 123, name: "김작가" },
+//   points: 10000,
+//   isKtCustomer: true,
+//   isAuthenticated: true,
+//   isSubscribed: false,
+//   roles: ["SUBSCRIBER", "WRITER"], // 👈 여기에 'WRITER' 역할을 추가합니다.
+//   subscribedBookIds: ["best-book-1"],
+//   status: "succeeded",
+// };
+// const initialState: UserState = {
+//   userInfo: { id: "writer-user", name: "김작가" },
+//   points: 5000,
+//   isKtCustomer: true,
+//   isAuthenticated: true,
+//   isSubscribed: true,
+//   roles: ["SUBSCRIBER", "WRITER"], // 👈 여기에 'WRITER' 역할을 추가합니다.
+//   subscribedBookIds: ["best-book-1"],
+//   status: "succeeded",
 // };
 
 // 👇 개발 편의를 위한 '강제 로그인' 상태 (필요시 주석을 풀고 위 initialState를 주석 처리)
@@ -98,11 +95,25 @@ const initialState: UserState = {
 //   points: 99999,
 //   isKtCustomer: true,
 //   isAuthenticated: true,
-//   roles: ['ADMIN'], // 👈 역할을 ADMIN으로 설정
+//   isSubscribed: true,
+//   roles: ['SUBSCRIBER', 'WRITER'], // 👈 여기에 'WRITER' 역할을 추가합니다.
+//   subscribedBookIds: ['best-book-1'],
 //   status: 'succeeded',
 // };
 
-// --- Slice 생성 ---
+// --- 초기 상태 ---
+const initialState: UserState = {
+  userInfo: null,
+  points: 0,
+  isKtCustomer: false,
+  // 페이지 로드 시 토큰 존재 여부로 로그인 상태를 결정합니다.
+  isAuthenticated: !!localStorage.getItem("accessToken"),
+  isSubscribed: false,
+  roles: [],
+  status: "idle",
+  subscribedBookIds: [],
+};
+
 const userSlice = createSlice({
   name: "user",
   initialState,
