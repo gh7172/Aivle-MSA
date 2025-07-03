@@ -9,7 +9,6 @@ const SignupPage: React.FC = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isKtCustomer, setIsKtCustomer] = useState(false);
-  const [isAuthor, setIsAuthor] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -29,7 +28,7 @@ const SignupPage: React.FC = () => {
         loginId: loginId,
         password: password,
         isKtCustomer: isKtCustomer,
-        isAuthor: isAuthor,
+        isAuthor: false, 
       };
 
       await apiClient.post('/users', payload);
@@ -68,16 +67,6 @@ const SignupPage: React.FC = () => {
           <div className={styles.inputGroup}>
             <label htmlFor="confirmPassword">비밀번호 확인</label>
             <input id="confirmPassword" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
-          </div>
-          
-          <div className={styles.checkboxGroup}>
-            <input
-              id="isAuthor"
-              type="checkbox"
-              checked={isAuthor}
-              onChange={(e) => setIsAuthor(e.target.checked)}
-            />
-            <label htmlFor="isAuthor">작가로 가입하시겠습니까?</label>
           </div>
 
           <div className={styles.checkboxGroup}>
