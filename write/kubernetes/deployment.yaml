@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: publish
+  name: write
   labels:
-    app: publish
+    app: write
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: publish
+      app: write
   template:
     metadata:
       labels:
-        app: publish
+        app: write
     spec:
       containers:
-        - name: publish
-          image: "username/publish:latest"
+        - name: write
+          image: "project09.azurecr.io/aivle-msa/write:latest"
           ports:
             - containerPort: 8080
           readinessProbe:

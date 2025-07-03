@@ -1,5 +1,5 @@
 server:
-  port: 8088
+  port: 8080
 
 ---
 
@@ -133,6 +133,3 @@ spring:
             allowedHeaders:
               - "*"
             allowCredentials: true
-
-server:
-  port: 8080

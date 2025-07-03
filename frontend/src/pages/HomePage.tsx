@@ -32,7 +32,7 @@ const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const { books, bestsellers, status: bookStatus } = useSelector((state: RootState) => state.books);
-  const { points, status: userStatus } = useSelector((state: RootState) => state.user);
+  const { status: userStatus } = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
     if (bookStatus === 'idle') {

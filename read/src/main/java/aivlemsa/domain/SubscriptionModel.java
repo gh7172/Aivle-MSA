@@ -25,7 +25,7 @@ public class SubscriptionModel {
         entity.setUserId(event.getUserId());
         entity.setExpirationDate(event.getSubscriptionExpiryDate());
         if (entity.getStartDate() == null) {
-            entity.setStartDate(LocalDateTime.now());
+        entity.setStartDate(LocalDateTime.now());
         }
         repo.save(entity);
     }

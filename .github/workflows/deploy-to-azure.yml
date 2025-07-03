@@ -1,0 +1,206 @@
+name: Deploy to Azure AKS
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+env:
+  AZURE_CONTAINER_REGISTRY: "project09"
+  RESOURCE_GROUP: "project09-rsrcgrp"
+  CLUSTER_NAME: "project09-aks"
+
+jobs:
+  build-and-push:
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        include:
+          - service: author
+            type: backend
+          - service: books
+            type: backend
+          - service: gateway
+            type: backend
+          - service: generation
+            type: backend
+          - service: point
+            type: backend
+          - service: purchase
+            type: backend
+          - service: read
+            type: backend
+          - service: subscription
+            type: backend
+          - service: user
+            type: backend
+          - service: write
+            type: backend
+          - service: frontend
+            type: frontend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Azure login
+        uses: azure/login@v1.4.6
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Set up JDK 11
+        if: matrix.type == 'backend'
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+
+      - name: Cache Maven dependencies
+        if: matrix.type == 'backend'
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Build Maven Project for ${{ matrix.service }}
+        if: matrix.type == 'backend'
+        run: mvn clean package -f ./${{ matrix.service }}/pom.xml -DskipTests
+
+      - name: Build and push ${{ matrix.service }} to ACR
+        run: |
+          if [ "${{ matrix.type }}" = "backend" ]; then
+            az acr build \
+              --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/aivle-msa/${{ matrix.service }}:${{ github.sha }} \
+              --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/aivle-msa/${{ matrix.service }}:latest \
+              --registry ${{ env.AZURE_CONTAINER_REGISTRY }} \
+              --resource-group ${{ env.RESOURCE_GROUP }} \
+              ./${{ matrix.service }}
+          else
+            az acr build \
+              --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/aivle-msa/${{ matrix.service }}:${{ github.sha }} \
+              --image ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/aivle-msa/${{ matrix.service }}:latest \
+              --registry ${{ env.AZURE_CONTAINER_REGISTRY }} \
+              --resource-group ${{ env.RESOURCE_GROUP }} \
+              ./${{ matrix.service }}
+          fi
+
+
+
+  deploy-infrastructure:
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    needs: [build-and-push]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Azure login
+        uses: azure/login@v1.4.6
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Set up kubelogin for non-interactive login
+        uses: azure/use-kubelogin@v1
+        with:
+          kubelogin-version: 'v0.0.25'
+
+      - name: Get K8s context
+        uses: azure/aks-set-context@v3
+        with:
+          resource-group: ${{ env.RESOURCE_GROUP }}
+          cluster-name: ${{ env.CLUSTER_NAME }}
+          admin: 'false'
+          use-kubelogin: 'true'
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: 'latest'
+
+      - name: Add Bitnami Helm Repository
+        run: |
+          helm repo add bitnami https://charts.bitnami.com/bitnami
+          helm repo update
+
+
+      - name: Install Kafka with Helm (if not exists)
+        run: |
+          KAFKA_RUNNING=$(kubectl get pods | grep "my-kafka.*Running" | wc -l || echo "0")
+          if [ "$KAFKA_RUNNING" -eq 0 ]; then
+            helm uninstall my-kafka || true
+            helm install my-kafka bitnami/kafka --version 23.0.5 --wait --timeout=10m
+          fi
+
+  deploy-services:
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    needs: [deploy-infrastructure]
+
+    strategy:
+      matrix:
+        include:
+          - service: author
+            type: backend
+          - service: books
+            type: backend
+          - service: gateway
+            type: backend
+          - service: generation
+            type: backend
+          - service: point
+            type: backend
+          - service: purchase
+            type: backend
+          - service: read
+            type: backend
+          - service: subscription
+            type: backend
+          - service: user
+            type: backend
+          - service: write
+            type: backend
+          - service: frontend
+            type: frontend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Azure login
+        uses: azure/login@v1.4.6
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Set up kubelogin for non-interactive login
+        uses: azure/use-kubelogin@v1
+        with:
+          kubelogin-version: 'v0.0.25'
+
+      - name: Get K8s context
+        uses: azure/aks-set-context@v3
+        with:
+          resource-group: ${{ env.RESOURCE_GROUP }}
+          cluster-name: ${{ env.CLUSTER_NAME }}
+          admin: 'false'
+          use-kubelogin: 'true'
+
+      - name: Update image tag in deployment manifest
+        run: |
+          if [ "${{ matrix.type }}" = "backend" ]; then
+            sed -i 's|:latest|:${{ github.sha }}|g' ${{ matrix.service }}/kubernetes/deployment.yaml
+            kubectl apply -f ${{ matrix.service }}/kubernetes/deployment.yaml
+            kubectl apply -f ${{ matrix.service }}/kubernetes/service.yaml
+            kubectl rollout status deployment/${{ matrix.service }} --timeout=300s
+          else
+            sed -i 's|:latest|:${{ github.sha }}|g' frontend/kubernetes/deployment.yaml
+            kubectl apply -f frontend/kubernetes/deployment.yaml
+            kubectl apply -f frontend/kubernetes/service.yaml
+            kubectl rollout status deployment/frontend --timeout=300s
+          fi
