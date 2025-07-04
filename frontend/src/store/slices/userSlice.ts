@@ -27,6 +27,7 @@ export const login = createAsyncThunk(
       const response = await apiClient.post("/login", credentials);
       // 로그인 성공 시 토큰을 localStorage에 저장합니다.
       localStorage.setItem("accessToken", response.data.token);
+      localStorage.setItem("userId", response.data.userId);
       return response.data.user;
     } catch (err: any) {
       return rejectWithValue(err.response.data);
@@ -36,11 +37,25 @@ export const login = createAsyncThunk(
 
 export const fetchUserProfile = createAsyncThunk(
   "user/fetchProfile",
-  async (_, { rejectWithValue }) => {
+  async (userId: number, { rejectWithValue }) => {
     try {
-      // 이 API는 유저 정보, 포인트, KT 여부, 그리고 '역할(roles)'을 모두 반환해야 합니다.
-      const response = await apiClient.get("/user/profile");
+      const response = await apiClient.get(`/users/${userId}`);
       return response.data;
+    } catch (err: any) {
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const subscribeUser = createAsyncThunk(
+  "user/subscribe",
+  async (userId: number, { dispatch, rejectWithValue }) => {
+    try {
+      // 백엔드의 구독 API 경로에 맞게 수정해야 할 수 있습니다.
+      await apiClient.post(`/subscribes?userId=${userId}`);
+      // 구독 성공 후, 최신 사용자 정보를 다시 불러와 상태를 업데이트합니다.
+      dispatch(fetchUserProfile(userId));
+      return userId;
     } catch (err: any) {
       return rejectWithValue(err.response.data);
     }
