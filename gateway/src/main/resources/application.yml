@@ -54,7 +54,11 @@ spring:
         - id: read
           uri: http://localhost:8091
           predicates:
-            - Path=/undefined/**, 
+            - Path=/undefined/**,
+        - id: pdf-generator
+          uri: http://localhost:8092
+          predicates:
+            - Path=/pdf/**
         - id: frontend
           uri: http://localhost:8080
           predicates:
@@ -118,7 +122,11 @@ spring:
         - id: read
           uri: http://read:8080
           predicates:
-            - Path=/undefined/**, 
+            - Path=/undefined/**,
+        - id: pdf-generator
+          uri: http://pdf-generator:8080
+          predicates:
+            - Path=/pdf/**
         - id: frontend
           uri: http://frontend:8080
           predicates:
@@ -133,3 +141,5 @@ spring:
             allowedHeaders:
               - "*"
             allowCredentials: true
+server:
+  port: 8080

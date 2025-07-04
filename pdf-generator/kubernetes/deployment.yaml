@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pdf-generator      # Deployment 이름 변경
+  labels:
+    app: pdf-generator      # 라벨 변경
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pdf-generator    # 관리할 파드의 라벨 변경
+  template:
+    metadata:
+      labels:
+        app: pdf-generator  # 생성될 파드의 라벨 변경
+    spec:
+      containers:
+        - name: pdf-generator # 컨테이너 이름 변경
+          # Docker 이미지 경로를 pdf-generator용으로 변경
+          image: "project09.azurecr.io/aivle-msa/pdf-generator:latest"
+          ports:
+            - containerPort: 8080
+          # Spring Boot Actuator를 사용한 상태 확인은 동일하게 유지
+          readinessProbe:
+            httpGet:
+              path: '/actuator/health'
+              port: 8080
+            initialDelaySeconds: 10
+            timeoutSeconds: 2
+            periodSeconds: 5
+            failureThreshold: 10
+          livenessProbe:
+            httpGet:
+              path: '/actuator/health'
+              port: 8080
+            initialDelaySeconds: 120
+            timeoutSeconds: 2
+            periodSeconds: 5
+            failureThreshold: 5

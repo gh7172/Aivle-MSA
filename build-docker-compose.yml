@@ -178,3 +178,15 @@ services:
       - ./read:/usr/src
       - ./maven-repo:/root/.m2
       
+  # --- 새로 추가된 pdf-generator 서비스 ---
+  pdf-generator:
+    image: maven:3.9.6-eclipse-temurin-17
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    command: mvn spring-boot:run
+    ports:
+      - 8092:8092 # 호스트 8092 포트를 컨테이너 8080 포트로 매핑
+    working_dir: /usr/src
+    volumes:
+      - ./pdf-generator:/usr/src
+      - ./maven-repo:/root/.m2

@@ -20,7 +20,7 @@ const SubscribedBookActions: React.FC<Props> = ({ bookId, bookTitle }) => {
     }
     try {
       // 1. 백엔드에 PDF 파일 요청 (응답 타입은 'blob'으로 설정)
-      const response = await apiClient.get(`/download/pdf/${bookId}`, {
+      const response = await apiClient.get(`/books/${bookId}/pdf`, {
         responseType: 'blob',
       });
 
