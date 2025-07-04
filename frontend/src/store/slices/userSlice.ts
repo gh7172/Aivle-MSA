@@ -89,30 +89,30 @@ export const fetchUserProfile = createAsyncThunk(
 //   status: "succeeded",
 // };
 
-// 👇 개발 편의를 위한 '강제 로그인' 상태 (필요시 주석을 풀고 위 initialState를 주석 처리)
-// const initialState: UserState = {
-//   userInfo: { id: 'admin-user', name: '관리자' },
-//   points: 99999,
-//   isKtCustomer: true,
-//   isAuthenticated: true,
-//   isSubscribed: true,
-//   roles: ['SUBSCRIBER', 'WRITER'], // 👈 여기에 'WRITER' 역할을 추가합니다.
-//   subscribedBookIds: ['best-book-1'],
-//   status: 'succeeded',
-// };
+//👇 개발 편의를 위한 '강제 로그인' 상태 (필요시 주석을 풀고 위 initialState를 주석 처리)
+const initialState: UserState = {
+  userInfo: { id: 1, name: "관리자" },
+  points: 99999,
+  isKtCustomer: true,
+  isAuthenticated: true,
+  isSubscribed: false,
+  roles: ["WRITER"], // 👈 여기에 'WRITER' 역할을 추가합니다.
+  subscribedBookIds: [],
+  status: "succeeded",
+};
 
 // --- 초기 상태 ---
-const initialState: UserState = {
-  userInfo: null,
-  points: 0,
-  isKtCustomer: false,
-  // 페이지 로드 시 토큰 존재 여부로 로그인 상태를 결정합니다.
-  isAuthenticated: !!localStorage.getItem("accessToken"),
-  isSubscribed: false,
-  roles: [],
-  status: "idle",
-  subscribedBookIds: [],
-};
+// const initialState: UserState = {
+//   userInfo: null,
+//   points: 0,
+//   isKtCustomer: false,
+//   // 페이지 로드 시 토큰 존재 여부로 로그인 상태를 결정합니다.
+//   isAuthenticated: !!localStorage.getItem("accessToken"),
+//   isSubscribed: false,
+//   roles: [],
+//   status: "idle",
+//   subscribedBookIds: [],
+// };
 
 const userSlice = createSlice({
   name: "user",
