@@ -1,19 +1,21 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import apiClient from "../api";
 import type { RootState, AppDispatch } from "../store/store";
-import { fetchUserProfile } from "../store/slices/userSlice";
+// [수정] fetchUserProfile 대신 subscribeUser를 가져옵니다.
+import { subscribeUser } from "../store/slices/userSlice";
 import PaymentModal from "../components/PaymentModal";
 import styles from "./SubscriptionPage.module.css";
 
 const SubscriptionPage: React.FC = () => {
-  const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-  const userPoints = useSelector((state: RootState) => state.user.points);
-  const userId = useSelector((state: RootState) => state.user.userInfo?.id);
+
+  // [수정] Redux store에서 필요한 상태들을 한 번에 가져옵니다.
+  const { status, points: userPoints, userInfo } = useSelector((state: RootState) => state.user);
+  const userId = userInfo?.id;
+  const isLoading = status === 'loading'; // 로딩 상태를 Redux status와 연동
 
   const requiredPrice = 9900;
   const productName = "프리미엄 구독";
@@ -29,16 +31,24 @@ const SubscriptionPage: React.FC = () => {
   };
 
   const handleConfirmPayment = async () => {
-    setLoading(true);
+    // [수정] userId가 없을 경우를 대비한 방어 코드
+    if (!userId) {
+      alert("사용자 정보가 없어 구독할 수 없습니다. 다시 로그인해주세요.");
+      return;
+    }
+
     try {
-      await apiClient.post(`/subscribe?userId=${userId}`);
+      // [수정] 직접 API를 호출하는 대신, Redux Thunk를 dispatch합니다.
+      // 이 Thunk는 내부적으로 구독 API 호출과 프로필 업데이트를 모두 처리합니다.
+      await dispatch(subscribeUser(userId)).unwrap();
+      
       alert("구독이 완료되었습니다! 모든 콘텐츠를 무제한으로 즐겨보세요.");
-      dispatch(fetchUserProfile());
       navigate("/");
     } catch (error) {
+      console.error("구독 처리 중 오류:", error);
       alert("구독 처리 중 오류가 발생했습니다.");
     } finally {
-      setLoading(false);
+      // 로딩 상태는 Redux status와 연동되므로 수동으로 제어할 필요가 없습니다.
       setIsModalOpen(false);
     }
   };
@@ -62,7 +72,7 @@ const SubscriptionPage: React.FC = () => {
             <li>✔️ 챗북 시리즈 독점 제공</li>
             <li>✔️ 광고 없이 쾌적한 독서</li>
           </ul>
-          <button className={styles.subscribeButton} onClick={handleOpenModal}>
+          <button className={styles.subscribeButton} onClick={handleOpenModal} disabled={isLoading}>
             {`${requiredPrice.toLocaleString()}P로 구독 시작하기`}
           </button>
         </div>
@@ -73,7 +83,7 @@ const SubscriptionPage: React.FC = () => {
         onConfirm={handleConfirmPayment}
         productName={productName}
         price={requiredPrice}
-        loading={loading}
+        loading={isLoading}
       />
     </>
   );

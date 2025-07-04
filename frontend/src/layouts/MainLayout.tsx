@@ -11,10 +11,11 @@ const MainLayout: React.FC = () => {
     
     // 👇 points를 추가로 가져옵니다.
     const { userInfo: user, roles, isSubscribed, points } = useSelector((state: RootState) => state.user);
+    const userId = localStorage.getItem('userId');
 
     useEffect(() => {
         if (localStorage.getItem('accessToken')) {
-            dispatch(fetchUserProfile());
+            dispatch(fetchUserProfile(Number(userId)));
         }
     }, [dispatch]);
 

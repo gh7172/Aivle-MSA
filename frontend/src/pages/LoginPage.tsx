@@ -14,19 +14,25 @@ const LoginPage: React.FC = () => {
   const navigate = useNavigate(); // useNavigate 훅 사용
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-    try {
-      // email을 loginId로 변경하여 전달
-      await dispatch(login({ loginId: email, password })).unwrap();
-      await dispatch(fetchUserProfile());
-      navigate('/'); // 로그인 성공 시 홈으로 이동
-    } catch (err: any) {
-      setError(err.message || '이메일 또는 비밀번호가 올바르지 않습니다.');
-      setLoading(false);
+  e.preventDefault();
+  setLoading(true);
+  setError('');
+  try {
+    const loginResult = await dispatch(login({ loginId: email, password })).unwrap();
+  
+    if (loginResult && loginResult.userId) {
+      await dispatch(fetchUserProfile(loginResult.userId));
+      navigate('/'); 
+    } else {
+      throw new Error("로그인 응답에 사용자 정보가 포함되지 않았습니다.");
     }
-  };
+
+  } catch (err: any) {
+    setError(err.message || '이메일 또는 비밀번호가 올바르지 않습니다.');
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className={styles.loginPage}>
