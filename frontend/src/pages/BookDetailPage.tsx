@@ -39,7 +39,12 @@ const BookDetailPage: React.FC = () => {
       await apiClient.post(`/read/${book.id}`);
       alert('구독이 완료되었습니다! 이제 이 책을 자유롭게 열람할 수 있습니다.');
       // 유저 정보를 새로고침하여 포인트 및 구독 목록을 갱신합니다.
-      dispatch(fetchUserProfile());
+      const token = localStorage.getItem('accessToken');
+      const userId = localStorage.getItem('userId');
+
+      if (token && userId) {
+        dispatch(fetchUserProfile(Number(userId)));
+    }
     } catch (error) {
       alert('구독 처리 중 오류가 발생했습니다.');
     }
