@@ -6,6 +6,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
   timeout: 10000,
+  withCredentials: true,
 });
 
 // 요청 인터셉터를 사용하여 모든 요청에 인증 토큰(JWT 등)을 추가합니다.
