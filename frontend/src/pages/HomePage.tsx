@@ -39,7 +39,12 @@ const HomePage: React.FC = () => {
       dispatch(fetchBooks());
     }
     if (userStatus === 'idle') {
-      dispatch(fetchUserProfile());
+      const token = localStorage.getItem('accessToken');
+      const userId = localStorage.getItem('userId');
+
+      if (token && userId) {
+        dispatch(fetchUserProfile(Number(userId)));
+    }
     }
   }, [bookStatus, userStatus, dispatch]);
 
