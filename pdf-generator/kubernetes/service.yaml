@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: pdf-generator  # 서비스 이름 변경
+  labels:
+    app: pdf-generator  # 라벨 변경
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: pdf-generator  # 연결할 파드의 라벨 변경

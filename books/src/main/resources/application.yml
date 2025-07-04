@@ -23,6 +23,12 @@ spring:
     properties:
       hibernate:
         format_sql: true
+# 로컬 개발 환경용 프로퍼티
+feign:
+  client:
+    pdf-generator:
+      # pdf-generator 서비스를 실행할 포트 (예: 8092)
+      url: http://localhost:8092
 ---
 
 spring:
@@ -117,5 +123,9 @@ management:
   endpoint:
     health:
       show-details: always
-
+feign:
+  client:
+    pdf-generator:
+      # Docker Compose나 Kubernetes에서 사용할 서비스 이름
+      url: http://pdf-generator:8080
 
