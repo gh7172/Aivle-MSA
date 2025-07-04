@@ -4,6 +4,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 RUN npm install @rollup/rollup-linux-x64-musl --save-optional || true
+RUN echo "VITE_API_BASE_URL=http://4.217.131.94:8080" > .env
 COPY . .
 RUN npm run build
 
